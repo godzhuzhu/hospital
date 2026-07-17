@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <aside class="sidebar">
     <div class="menu-group">
       <div class="menu-title">订单中心</div>
@@ -17,14 +17,8 @@
     <div class="menu-group">
       <div class="menu-title">关注中心</div>
       <ul>
-        <li :class="{ active: activeMenu === 'followHospital' }">
-          <router-link to="/follow?type=1">关注的医院</router-link>
-        </li>
-        <li :class="{ active: activeMenu === 'followDoctor' }">
-          <router-link to="/follow?type=2">关注的医生</router-link>
-        </li>
-        <li :class="{ active: activeMenu === 'followDisease' }">
-          <router-link to="/follow?type=3">关注的疾病</router-link>
+        <li :class="{ active: activeMenu === 'follow' }">
+          <router-link to="/follow">我的关注</router-link>
         </li>
       </ul>
     </div>
@@ -66,7 +60,7 @@ const menuMap = {
   '/my-appointments': 'myAppointment',
   '/my-consults': 'myConsult',
   '/my-reviews': 'myReviews',
-  '/follow': 'followHospital',
+  '/follow': 'follow',
   '/profile': 'profile',
   '/family-members': 'familyMembers',
   '/change-password': 'changePassword',

@@ -22,11 +22,11 @@
         <router-link to="/register">还没有账号？立即注册</router-link>
       </div>
       <div class="dev-section">
-        <div class="dev-divider"><span>开发模式（跳过 API）</span></div>
+        <div class="dev-divider"><span>开发模式（API 登录）</span></div>
         <button class="btn-primary btn-block btn-dev" @click="devLogin" :disabled="loading">
-          {{ loading ? '登录中...' : '一键登录（Mock 账号）' }}
+          {{ loading ? '登录中...' : '一键登录（测试账号）' }}
         </button>
-        <p class="dev-hint">手机号 13800138000 / 密码 123456</p>
+        <p class="dev-hint">手机号 13800001111 / 密码 123456</p>
       </div>
     </div>
   </div>
@@ -61,17 +61,17 @@ async function handleLogin() {
   }
 }
 
-function devLogin() {
+async function devLogin() {
   loading.value = true
-  const mockToken = 'eyJhbGciOiJIUzI1NiJ9.dev-mock-token'
-  const mockUser = { id: 1, phone: '13800138000', realName: '张三', avatar: '' }
-  const mockAuth = useAuthStore()
-  mockAuth.token = mockToken
-  mockAuth.userInfo = mockUser
-  localStorage.setItem('token', mockToken)
-  localStorage.setItem('userInfo', JSON.stringify(mockUser))
-  const redirect = route.query.redirect || '/'
-  router.push(redirect)
+  try {
+    await auth.login('13800001111', '123456')
+    const redirect = route.query.redirect || '/'
+    router.push(redirect)
+  } catch {
+    alert('一键登录失败，请检查后端服务是否启动')
+  } finally {
+    loading.value = false
+  }
 }
 </script>
 
