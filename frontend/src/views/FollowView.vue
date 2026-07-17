@@ -79,7 +79,7 @@ async function fetchFollows() {
       follows.value = res.data.records || []
       total.value = res.data.total || 0
     }
-  } catch { follows.value = [] }
+  } catch (_) { follows.value = [] }
   finally { loading.value = false }
 }
 
@@ -95,7 +95,7 @@ async function handleUnfollow(item) {
     await unfollowApi(item.followType, item.followId)
     fetchFollows()
     alert('已取消关注')
-  } catch { alert('操作失败') }
+  } catch (_) { alert('操作失败') }
 }
 </script>
 

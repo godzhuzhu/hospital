@@ -54,7 +54,7 @@ async function fetchReviews() {
       reviews.value = res.data.records || []
       total.value = res.data.total || 0
     }
-  } catch { reviews.value = [] }
+  } catch (_) { reviews.value = [] }
   finally { loading.value = false }
 }
 </script>

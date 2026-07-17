@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <div class="page-wrapper">
     <AppHeader />
     <div class="page-body">
@@ -122,7 +122,7 @@ onMounted(async () => {
   try {
     const res = await getProfileApi()
     Object.assign(profile, res.data)
-  } catch { /* 静默处理 */ }
+  } catch (_) { /* 静默处理 */ }
   finally { loading.value = false }
 })
 
@@ -153,7 +153,7 @@ async function saveProfile() {
     profile.birthday = form.birthday
     editing.value = false
     alert('保存成功')
-  } catch { alert('保存失败') }
+  } catch (_) { alert('保存失败') }
   finally { saving.value = false }
 }
 
@@ -164,7 +164,7 @@ async function handleAvatarChange(e) {
     const res = await uploadAvatarApi(file)
     profile.avatar = res.data.avatar
     alert('头像上传成功')
-  } catch { alert('上传失败') }
+  } catch (_) { alert('上传失败') }
 }
 </script>
 

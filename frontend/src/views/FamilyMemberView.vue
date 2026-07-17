@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <div class="page-wrapper">
     <AppHeader />
     <div class="page-body">
@@ -123,7 +123,7 @@ async function fetchList() {
   try {
     const res = await getFamilyMembersApi()
     list.value = res.data || []
-  } catch { list.value = [] }
+  } catch (_) { list.value = [] }
 }
 
 function maskIdCard(idCard) {
@@ -174,7 +174,7 @@ async function handleSave() {
     closeModal()
     await fetchList()
     alert('保存成功')
-  } catch { alert('保存失败') }
+  } catch (_) { alert('保存失败') }
   finally { saving.value = false }
 }
 
@@ -189,7 +189,7 @@ async function confirmDelete() {
     showDelete.value = false
     await fetchList()
     alert('删除成功')
-  } catch { alert('删除失败') }
+  } catch (_) { alert('删除失败') }
 }
 </script>
 

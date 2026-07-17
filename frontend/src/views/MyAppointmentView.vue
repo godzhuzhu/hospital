@@ -104,7 +104,7 @@ async function fetchOrders() {
       orders.value = res.data.records || res.data.list || []
       total.value = res.data.total || 0
     }
-  } catch { orders.value = [] }
+  } catch (_) { orders.value = [] }
   finally { loading.value = false }
 }
 
@@ -118,7 +118,7 @@ async function handleCancel(orderNo) {
     await cancelAppointmentApi(orderNo)
     alert('取消成功')
     fetchOrders()
-  } catch { alert('取消失败') }
+  } catch (_) { alert('取消失败') }
 }
 
 function openReview(order) {
@@ -140,7 +140,7 @@ async function submitReview() {
     })
     showReview.value = false
     alert('评价成功')
-  } catch { alert('评价失败') }
+  } catch (_) { alert('评价失败') }
   finally { submitting.value = false }
 }
 </script>

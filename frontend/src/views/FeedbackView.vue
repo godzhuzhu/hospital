@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <div class="page-wrapper">
     <AppHeader />
     <div class="page-body">
@@ -69,7 +69,7 @@ async function fetchFeedbacks() {
     if (res.data) {
       feedbacks.value = res.data.records || []
     }
-  } catch { feedbacks.value = [] }
+  } catch (_) { feedbacks.value = [] }
   finally { loading.value = false }
 }
 
@@ -84,7 +84,7 @@ async function submitFeedback() {
     form.content = ''
     alert('提交成功')
     fetchFeedbacks()
-  } catch { alert('提交失败') }
+  } catch (_) { alert('提交失败') }
   finally { submitting.value = false }
 }
 </script>

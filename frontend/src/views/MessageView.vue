@@ -54,7 +54,7 @@ async function fetchMessages() {
       messages.value = res.data.records || []
       total.value = res.data.total || 0
     }
-  } catch { messages.value = [] }
+  } catch (_) { messages.value = [] }
   finally { loading.value = false }
 }
 
@@ -63,7 +63,7 @@ async function readMsg(item) {
   try {
     await markReadApi(item.id)
     item.isRead = 1
-  } catch { /* */ }
+  } catch (_) { /* */ }
 }
 </script>
 
