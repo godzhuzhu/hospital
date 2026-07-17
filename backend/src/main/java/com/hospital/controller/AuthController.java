@@ -100,7 +100,11 @@ public class AuthController {
 
         String oldPassword = body.get("oldPassword");
         String newPassword = body.get("newPassword");
+        String confirmPassword = body.get("confirmPassword");
 
+        if (newPassword == null || !newPassword.equals(confirmPassword)) {
+            return Result.fail(400, "两次新密码不一致");
+        }
         if (!BCrypt.checkpw(oldPassword, user.getPassword())) {
             return Result.fail(400, "原密码错误");
         }
