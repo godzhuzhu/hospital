@@ -15,6 +15,22 @@
           <label>确认密码</label>
           <input v-model="form.confirmPassword" type="password" placeholder="请再次输入密码" />
         </div>
+        <div class="form-group">
+          <label>真实姓名（选填）</label>
+          <input v-model="form.realName" type="text" placeholder="请输入真实姓名" />
+        </div>
+        <div class="form-group">
+          <label>邮箱（选填）</label>
+          <input v-model="form.email" type="email" placeholder="请输入邮箱" />
+        </div>
+        <div class="form-group">
+          <label>性别</label>
+          <select v-model="form.gender">
+            <option value="">请选择</option>
+            <option value="1">男</option>
+            <option value="2">女</option>
+          </select>
+        </div>
         <button type="submit" class="btn-primary btn-block" :disabled="loading">
           {{ loading ? '注册中...' : '注 册' }}
         </button>
@@ -32,7 +48,7 @@ import { useRouter } from 'vue-router'
 import { registerApi } from '@/api/auth'
 
 const router = useRouter()
-const form = reactive({ phone: '', password: '', confirmPassword: '' })
+const form = reactive({ phone: '', password: '', confirmPassword: '', realName: '', email: '', gender: '' })
 const loading = ref(false)
 
 async function handleRegister() {
@@ -46,6 +62,9 @@ async function handleRegister() {
       username: form.phone,
       phone: form.phone,
       password: form.password,
+      realName: form.realName || undefined,
+      email: form.email || undefined,
+      gender: form.gender || undefined,
     })
     alert('注册成功！即将跳转登录页')
     router.push('/login')
@@ -92,10 +111,19 @@ async function handleRegister() {
   color: var(--text-light);
 }
 
-.form-group input {
+.form-group input,
+.form-group select {
   width: 100%;
   padding: 10px 12px;
   font-size: 14px;
+}
+
+.form-group select {
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--bg-white);
+  color: var(--text);
+  cursor: pointer;
 }
 
 .btn-block {
