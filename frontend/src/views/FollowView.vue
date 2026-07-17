@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <div class="page-wrapper">
     <AppHeader />
     <div class="page-body">
@@ -83,9 +83,9 @@ async function fetchFollows() {
 }
 
 function goDetail(item) {
-  if (item.followType === 1) router.push(/hospital/)
-  else if (item.followType === 2) router.push(/doctor/)
-  else if (item.followType === 3) router.push(/disease/)
+  if (item.followType === 1) router.push(`/hospital/${item.followId}`)
+  else if (item.followType === 2) router.push(`/doctor/${item.followId}`)
+  else if (item.followType === 3) router.push(`/disease/${item.followId}`)
 }
 
 async function handleUnfollow(item) {
