@@ -1,17 +1,13 @@
-<template>
+﻿<template>
   <div class="page-wrapper">
     <AppHeader />
     <div class="page-body">
       <AppSidebar />
       <div class="main-content">
         <h2 class="page-title">我的关注</h2>
-
         <div class="tabs">
-          <button v-for="t in tabs" :key="t.key" :class="{ active: activeType === t.key }" @click="switchTab(t.key)">
-            {{ t.label }}
-          </button>
+          <button v-for="t in tabs" :key="t.key" :class="{ active: activeType === t.key }" @click="switchTab(t.key)">{{ t.label }}</button>
         </div>
-
         <div v-if="loading" class="loading">加载中...</div>
         <div v-else-if="follows.length === 0" class="empty">暂无关注</div>
         <div v-else class="follow-list">
@@ -28,7 +24,6 @@
             <button class="btn-unfollow" @click.stop="handleUnfollow(item)">取消关注</button>
           </div>
         </div>
-
         <div v-if="total > pageSize" class="pagination">
           <button :disabled="page <= 1" @click="page--; fetchFollows()">上一页</button>
           <span>{{ page }} / {{ totalPages }}</span>
@@ -55,7 +50,7 @@ const activeType = ref(1)
 const page = ref(1)
 const pageSize = ref(10)
 const total = ref(0)
-const totalPages = computed(() => Math.ceil(total.value / pageSize.value))
+const totalPages = computed(function() { return Math.ceil(total.value / pageSize.value) })
 
 const tabs = [
   { key: 1, label: '关注的医院' },
@@ -63,7 +58,7 @@ const tabs = [
   { key: 3, label: '关注的疾病' },
 ]
 
-onMounted(() => fetchFollows())
+onMounted(function() { fetchFollows() })
 
 function switchTab(key) {
   activeType.value = key
@@ -74,19 +69,21 @@ function switchTab(key) {
 async function fetchFollows() {
   loading.value = true
   try {
-    const res = await getMyFollowsApi({ type: activeType.value, page: page.value, pageSize: pageSize.value })
+    var res = await getMyFollowsApi({ type: activeType.value, page: page.value, pageSize: pageSize.value })
     if (res.data) {
       follows.value = res.data.records || []
       total.value = res.data.total || 0
     }
-  } catch (_) { follows.value = [] }
+  } catch (e) { follows.value = [] }
   finally { loading.value = false }
 }
 
 function goDetail(item) {
-  if (item.followType === 1) router.push(`/hospital/${item.followId}`)
-  else if (item.followType === 2) router.push(`/doctor/${item.followId}`)
-  else if (item.followType === 3) router.push(`/disease/${item.followId}`)
+  var path = ''
+  if (item.followType === 1) path = '/hospital/' + item.followId
+  else if (item.followType === 2) path = '/doctor/' + item.followId
+  else if (item.followType === 3) path = '/disease/' + item.followId
+  router.push(path)
 }
 
 async function handleUnfollow(item) {
@@ -95,7 +92,7 @@ async function handleUnfollow(item) {
     await unfollowApi(item.followType, item.followId)
     fetchFollows()
     alert('已取消关注')
-  } catch (_) { alert('操作失败') }
+  } catch (e) { alert('操作失败') }
 }
 </script>
 
@@ -105,11 +102,9 @@ async function handleUnfollow(item) {
 .main-content { flex: 1; background: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); padding: 30px; }
 .page-title { font-size: 20px; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 2px solid #1e88e5; }
 .loading, .empty { text-align: center; padding: 60px; color: #999; }
-
 .tabs { display: flex; gap: 8px; margin-bottom: 20px; }
 .tabs button { padding: 8px 20px; background: #f5f5f5; border: 1px solid #e8e8e8; border-radius: 4px; cursor: pointer; font-size: 14px; color: #666; }
 .tabs button.active { background: #1e88e5; color: #fff; border-color: #1e88e5; }
-
 .follow-list { display: flex; flex-direction: column; gap: 12px; }
 .follow-card { display: flex; align-items: center; gap: 16px; background: #f5f7fa; border-radius: 8px; padding: 16px 20px; cursor: pointer; transition: background 0.2s; }
 .follow-card:hover { background: #eef0f4; }
@@ -121,7 +116,6 @@ async function handleUnfollow(item) {
 .follow-info p { font-size: 13px; color: #999; }
 .btn-unfollow { padding: 6px 16px; background: #fff; color: #ff5252; border: 1px solid #ff5252; border-radius: 4px; font-size: 13px; cursor: pointer; }
 .btn-unfollow:hover { background: #ff5252; color: #fff; }
-
 .pagination { display: flex; gap: 12px; align-items: center; justify-content: center; margin-top: 20px; }
 .pagination button { padding: 6px 16px; border: 1px solid #e8e8e8; background: #fff; border-radius: 4px; cursor: pointer; }
 .pagination button:disabled { opacity: 0.4; cursor: not-allowed; }
