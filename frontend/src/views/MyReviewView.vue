@@ -1,11 +1,23 @@
 <template>
-  <div class="page-wrapper">
+  <div class="my-review-page">
     <AppHeader />
     <div class="page-body">
       <AppSidebar />
-      <div class="main-content">
-        <h2>我的评价 - 由成员4开发</h2>
-        <p>此页面由成员4开发</p>
+      <div class="main">
+        <h2>我的评价</h2>
+        <div class="review-list">
+          <div class="review-card" v-for="r in reviews" :key="r.id">
+            <div class="review-header">
+              <span class="review-type">{{ r.orderType === 'appointment' ? '挂号' : '咨询' }}</span>
+              <span class="review-doctor">{{ r.doctorName }}</span>
+              <RateStar :modelValue="r.rating" readonly :size="'14px'" />
+              <span class="review-date">{{ r.createTime }}</span>
+            </div>
+            <p class="review-content">{{ r.content }}</p>
+          </div>
+        </div>
+        <div class="empty" v-if="reviews.length === 0">暂无评价</div>
+        <Pagination :total="total" :current="page" :pageSize="pageSize" @change="handlePage" />
       </div>
     </div>
     <AppFooter />
@@ -13,31 +25,45 @@
 </template>
 
 <script setup>
+import { ref, onMounted } from 'vue'
 import AppHeader from '@/components/AppHeader.vue'
-import AppSidebar from '@/components/AppSidebar.vue'
 import AppFooter from '@/components/AppFooter.vue'
+import AppSidebar from '@/components/AppSidebar.vue'
+import RateStar from '@/components/RateStar.vue'
+import Pagination from '@/components/Pagination.vue'
+import { getMyReviews } from '@/api/user'
+
+const reviews = ref([])
+const total = ref(0)
+const page = ref(1)
+const pageSize = ref(10)
+
+onMounted(fetchData)
+
+async function fetchData() {
+  try {
+    const res = await getMyReviews({ page: page.value, pageSize: pageSize.value })
+    const d = res.data.data || res.data
+    reviews.value = d.records || []
+    total.value = d.total || 0
+  } catch (e) { console.error('加载评价列表失败', e) }
+}
+
+function handlePage(p) { page.value = p; fetchData() }
 </script>
 
 <style scoped>
-.page-wrapper {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-}
-.page-body {
-  max-width: 1200px;
-  margin: 20px auto;
-  padding: 0 20px;
-  display: flex;
-  gap: 20px;
-  flex: 1;
-  width: 100%;
-}
-.main-content {
-  flex: 1;
-  background: #fff;
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-  padding: 30px;
-}
+.my-review-page { min-height: 100vh; background: var(--bg); }
+.page-body { display: flex; gap: 24px; }
+.main { flex: 1; }
+.main h2 { font-size: 20px; margin-bottom: 16px; }
+.review-list { display: flex; flex-direction: column; gap: 12px; }
+.review-card { padding: 16px; background: var(--bg-white); border-radius: var(--radius); box-shadow: var(--shadow); }
+.review-header { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; flex-wrap: wrap; }
+.review-type { font-size: 12px; padding: 1px 6px; background: #e3f2fd; color: var(--primary); border-radius: 3px; }
+.review-doctor { font-weight: 600; font-size: 14px; }
+.review-date { font-size: 12px; color: var(--text-muted); margin-left: auto; }
+.review-content { font-size: 14px; color: var(--text); line-height: 1.5; }
+.empty { text-align: center; padding: 40px; color: var(--text-muted); }
+@media (max-width: 768px) { .page-body { flex-direction: column; } }
 </style>

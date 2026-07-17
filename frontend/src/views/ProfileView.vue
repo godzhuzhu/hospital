@@ -1,11 +1,41 @@
 <template>
-  <div class="page-wrapper">
+  <div class="profile-page">
     <AppHeader />
     <div class="page-body">
       <AppSidebar />
-      <div class="main-content">
-        <h2>个人信息 - 由成员4开发</h2>
-        <p>此页面由成员4开发</p>
+      <div class="main">
+        <h2>个人资料</h2>
+        <div class="form-card">
+          <div class="avatar-section">
+            <img :src="form.avatar || defaultImg" :alt="form.name" />
+            <button class="btn-change">更换头像</button>
+          </div>
+          <div class="form-group">
+            <label>姓名</label>
+            <input v-model="form.name" placeholder="请输入姓名" />
+          </div>
+          <div class="form-group">
+            <label>性别</label>
+            <select v-model="form.gender">
+              <option value="0">未知</option>
+              <option value="1">男</option>
+              <option value="2">女</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>手机号</label>
+            <input v-model="form.phone" disabled />
+          </div>
+          <div class="form-group">
+            <label>邮箱</label>
+            <input v-model="form.email" placeholder="请输入邮箱" />
+          </div>
+          <div class="form-group">
+            <label>生日</label>
+            <input type="date" v-model="form.birthday" />
+          </div>
+          <button class="btn-primary" @click="handleSave">保存</button>
+        </div>
       </div>
     </div>
     <AppFooter />
@@ -13,31 +43,45 @@
 </template>
 
 <script setup>
+import { ref, onMounted } from 'vue'
 import AppHeader from '@/components/AppHeader.vue'
-import AppSidebar from '@/components/AppSidebar.vue'
 import AppFooter from '@/components/AppFooter.vue'
+import AppSidebar from '@/components/AppSidebar.vue'
+import { getProfile, updateProfile } from '@/api/user'
+
+const defaultImg = 'https://picsum.photos/100/100?random=99'
+const form = ref({ name: '', gender: '0', phone: '', email: '', birthday: '', avatar: '' })
+
+onMounted(async () => {
+  try {
+    const res = await getProfile()
+    const d = res.data.data || res.data
+    if (d) Object.assign(form.value, d)
+  } catch (e) { console.error('加载个人信息失败', e) }
+})
+
+async function handleSave() {
+  try {
+    await updateProfile(form.value)
+    alert('保存成功')
+  } catch (e) {
+    console.error('保存失败', e)
+    alert('保存失败')
+  }
+}
 </script>
 
 <style scoped>
-.page-wrapper {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-}
-.page-body {
-  max-width: 1200px;
-  margin: 20px auto;
-  padding: 0 20px;
-  display: flex;
-  gap: 20px;
-  flex: 1;
-  width: 100%;
-}
-.main-content {
-  flex: 1;
-  background: #fff;
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-  padding: 30px;
-}
+.profile-page { min-height: 100vh; background: var(--bg); }
+.page-body { display: flex; gap: 24px; }
+.main { flex: 1; }
+.main h2 { font-size: 20px; margin-bottom: 20px; }
+.form-card { background: var(--bg-white); border-radius: var(--radius); box-shadow: var(--shadow); padding: 32px; max-width: 600px; }
+.avatar-section { text-align: center; margin-bottom: 24px; }
+.avatar-section img { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; display: block; margin: 0 auto 8px; }
+.btn-change { font-size: 13px; color: var(--primary); background: none; border: none; cursor: pointer; }
+.form-group { margin-bottom: 16px; }
+.form-group label { display: block; font-size: 14px; font-weight: 600; margin-bottom: 6px; }
+.form-group input, .form-group select { width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 4px; font-size: 14px; }
+@media (max-width: 768px) { .page-body { flex-direction: column; } }
 </style>

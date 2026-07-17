@@ -1,13 +1,56 @@
 <template>
-  <div class="page-content">
+  <div class="success-page">
     <AppHeader />
-    <h2>咨询成功 - 由成员3开发</h2>
-    <p>此页面由成员3开发</p>
+    <div class="page-content">
+      <div class="success-card">
+        <div class="success-icon">✓</div>
+        <h2>咨询提交成功</h2>
+        <div class="order-info" v-if="order.orderNo">
+          <p>订单编号：{{ order.orderNo }}</p>
+          <p>医生：{{ order.doctorName }}</p>
+          <p>医院：{{ order.hospitalName }}</p>
+          <p>就诊人：{{ order.familyMemberName }}</p>
+          <p class="fee">已支付：¥{{ order.amount }}</p>
+        </div>
+        <p class="tip">医生将在24小时内回复您的咨询，请留意消息通知</p>
+        <div class="actions">
+          <router-link to="/my-consults" class="btn-primary">查看咨询</router-link>
+          <router-link to="/" class="btn-home">返回首页</router-link>
+        </div>
+      </div>
+    </div>
     <AppFooter />
   </div>
 </template>
 
 <script setup>
+import { ref, onMounted } from 'vue'
+import { useRoute } from 'vue-router'
 import AppHeader from '@/components/AppHeader.vue'
 import AppFooter from '@/components/AppFooter.vue'
+import { getConsultDetail } from '@/api/consult'
+
+const route = useRoute()
+const order = ref({})
+
+onMounted(async () => {
+  try {
+    const res = await getConsultDetail(route.params.orderNo)
+    order.value = res.data.data || res.data
+  } catch (e) { console.error('加载咨询结果失败', e) }
+})
 </script>
+
+<style scoped>
+.success-page { min-height: 100vh; background: var(--bg); }
+.success-card { max-width: 500px; margin: 60px auto; background: var(--bg-white); border-radius: var(--radius); box-shadow: var(--shadow); padding: 40px; text-align: center; }
+.success-icon { width: 72px; height: 72px; margin: 0 auto 20px; background: #4caf50; color: #fff; border-radius: 50%; font-size: 36px; display: flex; align-items: center; justify-content: center; }
+.success-card h2 { font-size: 24px; margin-bottom: 20px; color: #4caf50; }
+.tip { font-size: 13px; color: var(--text-light); margin-bottom: 16px; }
+.order-info { text-align: left; background: var(--bg); border-radius: var(--radius); padding: 16px; margin-bottom: 16px; }
+.order-info p { font-size: 14px; padding: 6px 0; border-bottom: 1px solid var(--border); }
+.order-info p:last-child { border-bottom: none; }
+.fee { color: #e53935; font-weight: 600; font-size: 16px !important; }
+.actions { display: flex; gap: 12px; justify-content: center; }
+.btn-home { padding: 10px 24px; background: #fff; border: 1px solid var(--border); border-radius: 4px; font-size: 14px; color: var(--text); }
+</style>
