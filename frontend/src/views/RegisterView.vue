@@ -71,7 +71,7 @@ async function handleRegister() {
     })
     alert('注册成功！即将跳转登录页')
     router.push('/login')
-  } catch {
+  } catch (_) {
     // 拦截器已提示
   } finally {
     loading.value = false

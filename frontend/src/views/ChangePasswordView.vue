@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <div class="page-wrapper">
     <AppHeader />
     <div class="page-body">
@@ -56,7 +56,7 @@ async function handleSubmit() {
     alert('密码修改成功，请重新登录')
     auth.logout()
     router.push('/login?redirect=/')
-  } catch {
+  } catch (_) {
     // 拦截器已提示
   } finally {
     loading.value = false

@@ -54,7 +54,7 @@ async function handleLogin() {
     await auth.login(form.phone, form.password)
     const redirect = route.query.redirect || '/'
     router.push(redirect)
-  } catch {
+  } catch (_) {
     // 拦截器已弹提示
   } finally {
     loading.value = false
@@ -67,7 +67,7 @@ async function devLogin() {
     await auth.login('13800001111', '123456')
     const redirect = route.query.redirect || '/'
     router.push(redirect)
-  } catch {
+  } catch (_) {
     alert('一键登录失败，请检查后端服务是否启动')
   } finally {
     loading.value = false
