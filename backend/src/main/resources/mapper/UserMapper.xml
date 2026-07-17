@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.whlg.hospital.mapper.UserMapper">
+
+    <resultMap id="BaseResultMap" type="com.whlg.hospital.entity.User">
+        <id column="id" property="id"/>
+        <result column="username" property="username"/>
+        <result column="password" property="password"/>
+        <result column="phone" property="phone"/>
+        <result column="email" property="email"/>
+        <result column="real_name" property="realName"/>
+        <result column="gender" property="gender"/>
+        <result column="birthday" property="birthday"/>
+        <result column="avatar" property="avatar"/>
+        <result column="status" property="status"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, username, password, phone, email, real_name, gender, birthday, avatar, status, create_time, update_time
+    </sql>
+
+    <select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.Long">
+        select <include refid="Base_Column_List"/> from t_user where id = #{id}
+    </select>
+
+    <select id="selectAll" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/> from t_user order by id desc
+    </select>
+
+    <insert id="insert" parameterType="com.whlg.hospital.entity.User" useGeneratedKeys="true" keyProperty="id">
+        insert into t_user (
+            username, password, phone, email, real_name, gender, birthday, avatar, status, create_time, update_time
+        ) values (
+            #{username}, #{password}, #{phone}, #{email}, #{realName}, #{gender}, #{birthday}, #{avatar}, #{status}, #{createTime}, #{updateTime}
+        )
+    </insert>
+
+    <update id="updateById">
+        update t_user
+        set username = #{et.username},
+            password = #{et.password},
+            phone = #{et.phone},
+            email = #{et.email},
+            real_name = #{et.realName},
+            gender = #{et.gender},
+            birthday = #{et.birthday},
+            avatar = #{et.avatar},
+            status = #{et.status},
+            create_time = #{et.createTime},
+            update_time = #{et.updateTime}
+        where id = #{et.id}
+    </update>
+
+    <delete id="deleteById" parameterType="java.lang.Long">
+        delete from t_user where id = #{id}
+    </delete>
+
+</mapper>

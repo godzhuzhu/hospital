@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.whlg.hospital.mapper.ScheduleMapper">
+
+    <resultMap id="BaseResultMap" type="com.whlg.hospital.entity.Schedule">
+        <id column="id" property="id"/>
+        <result column="doctor_id" property="doctorId"/>
+        <result column="hospital_id" property="hospitalId"/>
+        <result column="department_id" property="departmentId"/>
+        <result column="schedule_date" property="scheduleDate"/>
+        <result column="time_slot" property="timeSlot"/>
+        <result column="total_count" property="totalCount"/>
+        <result column="remain_count" property="remainCount"/>
+        <result column="status" property="status"/>
+        <result column="create_time" property="createTime"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, doctor_id, hospital_id, department_id, schedule_date, time_slot, total_count, remain_count, status, create_time
+    </sql>
+
+    <select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.Long">
+        select <include refid="Base_Column_List"/> from t_schedule where id = #{id}
+    </select>
+
+    <select id="selectAll" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/> from t_schedule order by id desc
+    </select>
+
+    <insert id="insert" parameterType="com.whlg.hospital.entity.Schedule" useGeneratedKeys="true" keyProperty="id">
+        insert into t_schedule (
+            doctor_id, hospital_id, department_id, schedule_date, time_slot, total_count, remain_count, status, create_time
+        ) values (
+            #{doctorId}, #{hospitalId}, #{departmentId}, #{scheduleDate}, #{timeSlot}, #{totalCount}, #{remainCount}, #{status}, #{createTime}
+        )
+    </insert>
+
+    <update id="updateById">
+        update t_schedule
+        set doctor_id = #{et.doctorId},
+            hospital_id = #{et.hospitalId},
+            department_id = #{et.departmentId},
+            schedule_date = #{et.scheduleDate},
+            time_slot = #{et.timeSlot},
+            total_count = #{et.totalCount},
+            remain_count = #{et.remainCount},
+            status = #{et.status},
+            create_time = #{et.createTime}
+        where id = #{et.id}
+    </update>
+
+    <delete id="deleteById" parameterType="java.lang.Long">
+        delete from t_schedule where id = #{id}
+    </delete>
+
+</mapper>

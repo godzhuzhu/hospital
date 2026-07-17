@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.whlg.hospital.mapper.HospitalMapper">
+
+    <resultMap id="BaseResultMap" type="com.whlg.hospital.entity.Hospital">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="level" property="level"/>
+        <result column="address" property="address"/>
+        <result column="phone" property="phone"/>
+        <result column="intro" property="intro"/>
+        <result column="image" property="image"/>
+        <result column="province" property="province"/>
+        <result column="city" property="city"/>
+        <result column="department_count" property="departmentCount"/>
+        <result column="doctor_count" property="doctorCount"/>
+        <result column="follow_count" property="followCount"/>
+        <result column="status" property="status"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, name, level, address, phone, intro, image, province, city, department_count, doctor_count, follow_count, status, create_time, update_time
+    </sql>
+
+    <select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.Long">
+        select <include refid="Base_Column_List"/> from t_hospital where id = #{id}
+    </select>
+
+    <select id="selectAll" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/> from t_hospital order by id desc
+    </select>
+
+    <insert id="insert" parameterType="com.whlg.hospital.entity.Hospital" useGeneratedKeys="true" keyProperty="id">
+        insert into t_hospital (
+            name, level, address, phone, intro, image, province, city, department_count, doctor_count, follow_count, status, create_time, update_time
+        ) values (
+            #{name}, #{level}, #{address}, #{phone}, #{intro}, #{image}, #{province}, #{city}, #{departmentCount}, #{doctorCount}, #{followCount}, #{status}, #{createTime}, #{updateTime}
+        )
+    </insert>
+
+    <update id="updateById">
+        update t_hospital
+        set name = #{et.name},
+            level = #{et.level},
+            address = #{et.address},
+            phone = #{et.phone},
+            intro = #{et.intro},
+            image = #{et.image},
+            province = #{et.province},
+            city = #{et.city},
+            department_count = #{et.departmentCount},
+            doctor_count = #{et.doctorCount},
+            follow_count = #{et.followCount},
+            status = #{et.status},
+            create_time = #{et.createTime},
+            update_time = #{et.updateTime}
+        where id = #{et.id}
+    </update>
+
+    <delete id="deleteById" parameterType="java.lang.Long">
+        delete from t_hospital where id = #{id}
+    </delete>
+
+</mapper>

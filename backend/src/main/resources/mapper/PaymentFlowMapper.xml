@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.whlg.hospital.mapper.PaymentFlowMapper">
+
+    <resultMap id="BaseResultMap" type="com.whlg.hospital.entity.PaymentFlow">
+        <id column="id" property="id"/>
+        <result column="business_order_no" property="businessOrderNo"/>
+        <result column="business_type" property="businessType"/>
+        <result column="pay_method" property="payMethod"/>
+        <result column="third_party_trade_no" property="thirdPartyTradeNo"/>
+        <result column="actual_amount" property="actualAmount"/>
+        <result column="pay_status" property="payStatus"/>
+        <result column="pay_success_time" property="paySuccessTime"/>
+        <result column="original_callback" property="originalCallback"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, business_order_no, business_type, pay_method, third_party_trade_no, actual_amount, pay_status, pay_success_time, original_callback, create_time, update_time
+    </sql>
+
+    <select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.Long">
+        select <include refid="Base_Column_List"/> from t_payment_flow where id = #{id}
+    </select>
+
+    <select id="selectAll" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/> from t_payment_flow order by id desc
+    </select>
+
+    <insert id="insert" parameterType="com.whlg.hospital.entity.PaymentFlow" useGeneratedKeys="true" keyProperty="id">
+        insert into t_payment_flow (
+            business_order_no, business_type, pay_method, third_party_trade_no, actual_amount, pay_status, pay_success_time, original_callback, create_time, update_time
+        ) values (
+            #{businessOrderNo}, #{businessType}, #{payMethod}, #{thirdPartyTradeNo}, #{actualAmount}, #{payStatus}, #{paySuccessTime}, #{originalCallback}, #{createTime}, #{updateTime}
+        )
+    </insert>
+
+    <update id="updateById">
+        update t_payment_flow
+        set business_order_no = #{et.businessOrderNo},
+            business_type = #{et.businessType},
+            pay_method = #{et.payMethod},
+            third_party_trade_no = #{et.thirdPartyTradeNo},
+            actual_amount = #{et.actualAmount},
+            pay_status = #{et.payStatus},
+            pay_success_time = #{et.paySuccessTime},
+            original_callback = #{et.originalCallback},
+            create_time = #{et.createTime},
+            update_time = #{et.updateTime}
+        where id = #{et.id}
+    </update>
+
+    <delete id="deleteById" parameterType="java.lang.Long">
+        delete from t_payment_flow where id = #{id}
+    </delete>
+
+</mapper>

@@ -1,0 +1,4593 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "医院在线预约挂号系统 API",
+    "description": "根据当前后端控制器、请求 DTO、测试断言与《项目分工与接口映射.md》整理的可导入 Apifox 的 OpenAPI 3.0 JSON。统一响应格式为 { code, message, data }。\n\n已补充 x-apifox-folder 和 operationId，导入后更容易按模块分组并生成接口结构。",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8080",
+      "description": "本地开发"
+    }
+  ],
+  "tags": [
+    {
+      "name": "认证"
+    },
+    {
+      "name": "首页"
+    },
+    {
+      "name": "医院"
+    },
+    {
+      "name": "科室"
+    },
+    {
+      "name": "医生"
+    },
+    {
+      "name": "疾病"
+    },
+    {
+      "name": "文章"
+    },
+    {
+      "name": "搜索"
+    },
+    {
+      "name": "挂号订单"
+    },
+    {
+      "name": "咨询订单"
+    },
+    {
+      "name": "支付"
+    },
+    {
+      "name": "个人中心"
+    },
+    {
+      "name": "就诊人"
+    },
+    {
+      "name": "评价"
+    },
+    {
+      "name": "消息"
+    },
+    {
+      "name": "反馈"
+    },
+    {
+      "name": "关注"
+    },
+    {
+      "name": "系统"
+    }
+  ],
+  "paths": {
+    "/api/auth/register": {
+      "post": {
+        "tags": [
+          "认证"
+        ],
+        "summary": "注册",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterRequest"
+              },
+              "example": {
+                "phone": "13900139000",
+                "password": "123456",
+                "confirmPassword": "123456",
+                "captcha": "8888"
+              },
+              "examples": {
+                "registerSuccess": {
+                  "summary": "注册成功",
+                  "value": {
+                    "phone": "13900139000",
+                    "password": "123456",
+                    "confirmPassword": "123456",
+                    "captcha": "8888"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 200
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "success"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "userId": {
+                          "type": "integer",
+                          "format": "int64",
+                          "example": 2
+                        }
+                      }
+                    }
+                  }
+                },
+                "examples": {
+                  "registerSuccess": {
+                    "summary": "注册成功响应",
+                    "value": {
+                      "code": 200,
+                      "message": "success",
+                      "data": {
+                        "userId": 2
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-apifox-note": "以下 examples 来自现有集成测试，可在 Apifox 中直接作为调试用例。",
+        "x-apifox-folder": "认证",
+        "operationId": "postApiAuthRegister",
+        "x-apifox-summary": "注册"
+      }
+    },
+    "/api/auth/login": {
+      "post": {
+        "tags": [
+          "认证"
+        ],
+        "summary": "登录",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginRequest"
+              },
+              "example": {
+                "phone": "13800138000",
+                "password": "123456"
+              },
+              "examples": {
+                "loginSuccess": {
+                  "summary": "登录成功",
+                  "value": {
+                    "phone": "13800138000",
+                    "password": "123456"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 200
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "success"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "token": {
+                          "type": "string",
+                          "example": "token-1-123456789"
+                        },
+                        "userInfo": {
+                          "$ref": "#/components/schemas/UserBrief"
+                        }
+                      }
+                    }
+                  }
+                },
+                "examples": {
+                  "loginSuccess": {
+                    "summary": "登录成功响应",
+                    "value": {
+                      "code": 200,
+                      "message": "success",
+                      "data": {
+                        "token": "token-1-123456789",
+                        "userInfo": {
+                          "id": 1,
+                          "name": "张三",
+                          "phone": "13800138000",
+                          "avatar": "/avatar/user-1.png"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-apifox-folder": "认证",
+        "operationId": "postApiAuthLogin",
+        "x-apifox-summary": "登录"
+      }
+    },
+    "/api/auth/me": {
+      "get": {
+        "tags": [
+          "认证"
+        ],
+        "summary": "获取当前登录用户",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 200
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "success"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "userInfo": {
+                          "$ref": "#/components/schemas/UserBrief"
+                        }
+                      }
+                    }
+                  }
+                },
+                "examples": {
+                  "meSuccess": {
+                    "summary": "获取当前用户成功",
+                    "value": {
+                      "code": 200,
+                      "message": "success",
+                      "data": {
+                        "userInfo": {
+                          "id": 1,
+                          "name": "张三",
+                          "phone": "13800138000",
+                          "avatar": "/avatar/user-1.png"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "example": "Bearer token-1-123456789",
+            "description": "登录后携带的 Bearer Token"
+          }
+        ],
+        "x-apifox-folder": "认证",
+        "operationId": "getApiAuthMe",
+        "x-apifox-summary": "获取当前登录用户"
+      }
+    },
+    "/api/auth/change-password": {
+      "post": {
+        "tags": [
+          "认证"
+        ],
+        "summary": "修改密码",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChangePasswordRequest"
+              },
+              "example": {
+                "oldPassword": "123456",
+                "newPassword": "abc12345",
+                "confirmPassword": "abc12345"
+              },
+              "examples": {
+                "changePasswordSuccess": {
+                  "summary": "修改密码成功",
+                  "value": {
+                    "oldPassword": "123456",
+                    "newPassword": "abc12345",
+                    "confirmPassword": "abc12345"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "??",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 200
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "success"
+                    },
+                    "data": {
+                      "type": "null",
+                      "nullable": true,
+                      "example": null
+                    }
+                  }
+                },
+                "examples": {
+                  "successNull": {
+                    "summary": "??",
+                    "value": {
+                      "code": 200,
+                      "message": "success",
+                      "data": null
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "example": "Bearer token-1-123456789",
+            "description": "登录后携带的 Bearer Token"
+          }
+        ],
+        "x-apifox-folder": "认证",
+        "operationId": "postApiAuthChangePassword",
+        "x-apifox-summary": "修改密码"
+      }
+    },
+    "/api/auth/logout": {
+      "post": {
+        "tags": [
+          "认证"
+        ],
+        "summary": "退出登录",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "??",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 200
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "success"
+                    },
+                    "data": {
+                      "type": "null",
+                      "nullable": true,
+                      "example": null
+                    }
+                  }
+                },
+                "examples": {
+                  "successNull": {
+                    "summary": "??",
+                    "value": {
+                      "code": 200,
+                      "message": "success",
+                      "data": null
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "example": "Bearer token-1-123456789",
+            "description": "登录后携带的 Bearer Token"
+          }
+        ],
+        "x-apifox-folder": "认证",
+        "operationId": "postApiAuthLogout",
+        "x-apifox-summary": "退出登录"
+      }
+    },
+    "/api/home/index": {
+      "get": {
+        "tags": [
+          "首页"
+        ],
+        "summary": "首页聚合数据",
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 200
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "success"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "banners": {
+                          "type": "array",
+                          "items": {
+                            "type": "object"
+                          }
+                        },
+                        "recommendHospitals": {
+                          "type": "array",
+                          "items": {
+                            "type": "object"
+                          }
+                        },
+                        "recommendDoctors": {
+                          "type": "array",
+                          "items": {
+                            "type": "object"
+                          }
+                        },
+                        "recommendDiseases": {
+                          "type": "array",
+                          "items": {
+                            "type": "object"
+                          }
+                        },
+                        "recommendArticles": {
+                          "type": "array",
+                          "items": {
+                            "type": "object"
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "examples": {
+                  "homeIndex": {
+                    "summary": "首页聚合数据",
+                    "value": {
+                      "code": 200,
+                      "message": "success",
+                      "data": {
+                        "banners": [
+                          {
+                            "image": "/img/banner-1.png",
+                            "link": "/doctor/1"
+                          }
+                        ],
+                        "recommendHospitals": [
+                          {
+                            "id": 1,
+                            "name": "北京第一人民医院"
+                          }
+                        ],
+                        "recommendDoctors": [
+                          {
+                            "id": 1,
+                            "name": "李主任"
+                          }
+                        ],
+                        "recommendDiseases": [
+                          {
+                            "id": 1,
+                            "name": "高血压"
+                          }
+                        ],
+                        "recommendArticles": [
+                          {
+                            "id": 1,
+                            "title": "高血压日常管理"
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-apifox-folder": "首页",
+        "operationId": "getApiHomeIndex",
+        "x-apifox-summary": "首页聚合数据"
+      }
+    },
+    "/api/hospitals": {
+      "get": {
+        "tags": [
+          "医院"
+        ],
+        "summary": "医院列表",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Page"
+          },
+          {
+            "$ref": "#/components/parameters/PageSize"
+          },
+          {
+            "name": "departmentId",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "keyword",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "level",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "province",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "city",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PageHospitalResponse"
+                },
+                "examples": {
+                  "hospitalList": {
+                    "summary": "医院列表",
+                    "value": {
+                      "code": 200,
+                      "message": "success",
+                      "data": {
+                        "records": [
+                          {
+                            "id": 1,
+                            "name": "北京第一人民医院",
+                            "level": "三甲",
+                            "province": "北京",
+                            "city": "北京"
+                          },
+                          {
+                            "id": 2,
+                            "name": "上海瑞康医院",
+                            "level": "三甲",
+                            "province": "上海",
+                            "city": "上海"
+                          }
+                        ],
+                        "total": 2,
+                        "page": 1,
+                        "pageSize": 10
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-apifox-folder": "医院",
+        "operationId": "getApiHospitals",
+        "x-apifox-summary": "医院列表"
+      }
+    },
+    "/api/hospitals/{id}": {
+      "get": {
+        "tags": [
+          "医院"
+        ],
+        "summary": "医院详情",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HospitalDetailResponse"
+                }
+              }
+            }
+          }
+        },
+        "x-apifox-folder": "医院",
+        "operationId": "getApiHospitalsId",
+        "x-apifox-summary": "医院详情"
+      }
+    },
+    "/api/hospitals/{id}/departments": {
+      "get": {
+        "tags": [
+          "医院"
+        ],
+        "summary": "医院科室树",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DepartmentTreeResponse"
+                }
+              }
+            }
+          }
+        },
+        "x-apifox-folder": "医院",
+        "operationId": "getApiHospitalsIdDepartments",
+        "x-apifox-summary": "医院科室树"
+      }
+    },
+    "/api/hospitals/{id}/doctors": {
+      "get": {
+        "tags": [
+          "医院"
+        ],
+        "summary": "医院下的医生列表",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/Page"
+          },
+          {
+            "$ref": "#/components/parameters/PageSize"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PageDoctorResponse"
+                }
+              }
+            }
+          }
+        },
+        "x-apifox-folder": "医院",
+        "operationId": "getApiHospitalsIdDoctors",
+        "x-apifox-summary": "医院下的医生列表"
+      }
+    },
+    "/api/departments/tree": {
+      "get": {
+        "tags": [
+          "科室"
+        ],
+        "summary": "全局科室树",
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DepartmentTreeResponse"
+                }
+              }
+            }
+          }
+        },
+        "x-apifox-folder": "科室",
+        "operationId": "getApiDepartmentsTree",
+        "x-apifox-summary": "全局科室树"
+      }
+    },
+    "/api/doctors": {
+      "get": {
+        "tags": [
+          "医生"
+        ],
+        "summary": "医生列表",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Page"
+          },
+          {
+            "$ref": "#/components/parameters/PageSize"
+          },
+          {
+            "name": "departmentId",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "keyword",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "hospitalId",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PageDoctorResponse"
+                }
+              }
+            }
+          }
+        },
+        "x-apifox-folder": "医生",
+        "operationId": "getApiDoctors",
+        "x-apifox-summary": "医生列表"
+      }
+    },
+    "/api/doctors/{id}": {
+      "get": {
+        "tags": [
+          "医生"
+        ],
+        "summary": "医生详情",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DoctorDetailResponse"
+                }
+              }
+            }
+          }
+        },
+        "x-apifox-folder": "医生",
+        "operationId": "getApiDoctorsId",
+        "x-apifox-summary": "医生详情"
+      }
+    },
+    "/api/doctors/{id}/schedules": {
+      "get": {
+        "tags": [
+          "医生"
+        ],
+        "summary": "医生排班",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "days",
+            "in": "query",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScheduleListResponse"
+                },
+                "examples": {
+                  "doctorSchedules": {
+                    "summary": "医生排班",
+                    "value": {
+                      "code": 200,
+                      "message": "success",
+                      "data": [
+                        {
+                          "id": 1,
+                          "scheduleDate": "2026-07-18",
+                          "weekDay": "周六",
+                          "timeSlot": "08:00-09:00",
+                          "remainCount": 8,
+                          "totalCount": 20,
+                          "registrationPrice": 18.0,
+                          "status": 1
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-apifox-folder": "医生",
+        "operationId": "getApiDoctorsIdSchedules",
+        "x-apifox-summary": "医生排班"
+      }
+    },
+    "/api/doctors/{id}/reviews": {
+      "get": {
+        "tags": [
+          "医生"
+        ],
+        "summary": "医生评价列表",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/Page"
+          },
+          {
+            "$ref": "#/components/parameters/PageSize"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PageReviewResponse"
+                }
+              }
+            }
+          }
+        },
+        "x-apifox-folder": "医生",
+        "operationId": "getApiDoctorsIdReviews",
+        "x-apifox-summary": "医生评价列表"
+      }
+    },
+    "/api/diseases": {
+      "get": {
+        "tags": [
+          "疾病"
+        ],
+        "summary": "疾病列表",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Page"
+          },
+          {
+            "$ref": "#/components/parameters/PageSize"
+          },
+          {
+            "name": "departmentId",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "keyword",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PageDiseaseResponse"
+                }
+              }
+            }
+          }
+        },
+        "x-apifox-folder": "疾病",
+        "operationId": "getApiDiseases",
+        "x-apifox-summary": "疾病列表"
+      }
+    },
+    "/api/diseases/{id}": {
+      "get": {
+        "tags": [
+          "疾病"
+        ],
+        "summary": "疾病详情",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DiseaseDetailResponse"
+                }
+              }
+            }
+          }
+        },
+        "x-apifox-folder": "疾病",
+        "operationId": "getApiDiseasesId",
+        "x-apifox-summary": "疾病详情"
+      }
+    },
+    "/api/articles": {
+      "get": {
+        "tags": [
+          "文章"
+        ],
+        "summary": "文章列表",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Page"
+          },
+          {
+            "$ref": "#/components/parameters/PageSize"
+          },
+          {
+            "name": "departmentId",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "keyword",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PageArticleResponse"
+                }
+              }
+            }
+          }
+        },
+        "x-apifox-folder": "文章",
+        "operationId": "getApiArticles",
+        "x-apifox-summary": "文章列表"
+      }
+    },
+    "/api/articles/{id}": {
+      "get": {
+        "tags": [
+          "文章"
+        ],
+        "summary": "文章详情",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArticleDetailResponse"
+                }
+              }
+            }
+          }
+        },
+        "x-apifox-folder": "文章",
+        "operationId": "getApiArticlesId",
+        "x-apifox-summary": "文章详情"
+      }
+    },
+    "/api/search/global": {
+      "get": {
+        "tags": [
+          "搜索"
+        ],
+        "summary": "全局搜索",
+        "parameters": [
+          {
+            "name": "keyword",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "hospital",
+                "doctor",
+                "disease",
+                "article"
+              ]
+            }
+          },
+          {
+            "$ref": "#/components/parameters/Page"
+          },
+          {
+            "$ref": "#/components/parameters/PageSize"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 200
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "success"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "hospitalList": {
+                          "type": "array",
+                          "items": {
+                            "type": "object"
+                          }
+                        },
+                        "doctorList": {
+                          "type": "array",
+                          "items": {
+                            "type": "object"
+                          }
+                        },
+                        "diseaseList": {
+                          "type": "array",
+                          "items": {
+                            "type": "object"
+                          }
+                        },
+                        "articleList": {
+                          "type": "array",
+                          "items": {
+                            "type": "object"
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "examples": {
+                  "globalSearch": {
+                    "summary": "全局搜索高血压",
+                    "value": {
+                      "code": 200,
+                      "message": "success",
+                      "data": {
+                        "hospitalList": [],
+                        "doctorList": [
+                          {
+                            "id": 1,
+                            "name": "李主任"
+                          }
+                        ],
+                        "diseaseList": [
+                          {
+                            "id": 1,
+                            "name": "高血压"
+                          }
+                        ],
+                        "articleList": [
+                          {
+                            "id": 1,
+                            "title": "高血压日常管理"
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-apifox-folder": "搜索",
+        "operationId": "getApiSearchGlobal",
+        "x-apifox-summary": "全局搜索"
+      }
+    },
+    "/api/appointments": {
+      "post": {
+        "tags": [
+          "挂号订单"
+        ],
+        "summary": "创建挂号订单",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateAppointmentRequest"
+              },
+              "example": {
+                "scheduleId": 1,
+                "familyMemberId": 1,
+                "diseaseDesc": "头晕"
+              },
+              "examples": {
+                "createAppointment": {
+                  "summary": "创建挂号订单",
+                  "value": {
+                    "scheduleId": 1,
+                    "familyMemberId": 1,
+                    "diseaseDesc": "头晕"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 200
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "success"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "orderNo": {
+                          "type": "string",
+                          "example": "AP202607170002"
+                        }
+                      }
+                    }
+                  }
+                },
+                "examples": {
+                  "createAppointment": {
+                    "summary": "创建挂号成功",
+                    "value": {
+                      "code": 200,
+                      "message": "success",
+                      "data": {
+                        "orderNo": "AP202607170002"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "example": "Bearer token-1-123456789",
+            "description": "登录后携带的 Bearer Token"
+          }
+        ],
+        "x-apifox-folder": "挂号订单",
+        "operationId": "postApiAppointments",
+        "x-apifox-summary": "创建挂号订单"
+      }
+    },
+    "/api/appointments/my": {
+      "get": {
+        "tags": [
+          "挂号订单"
+        ],
+        "summary": "我的挂号列表",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Page"
+          },
+          {
+            "$ref": "#/components/parameters/PageSize"
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "example": "Bearer token-1-123456789",
+            "description": "登录后携带的 Bearer Token"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PageAppointmentResponse"
+                }
+              }
+            }
+          }
+        },
+        "x-apifox-folder": "挂号订单",
+        "operationId": "getApiAppointmentsMy",
+        "x-apifox-summary": "我的挂号列表"
+      }
+    },
+    "/api/appointments/{orderNo}": {
+      "get": {
+        "tags": [
+          "挂号订单"
+        ],
+        "summary": "挂号订单详情",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "orderNo",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "example": "Bearer token-1-123456789",
+            "description": "登录后携带的 Bearer Token"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AppointmentDetailResponse"
+                },
+                "examples": {
+                  "appointmentDetail": {
+                    "summary": "挂号订单详情",
+                    "value": {
+                      "code": 200,
+                      "message": "success",
+                      "data": {
+                        "orderNo": "AP202607170001",
+                        "doctor": {
+                          "id": 1,
+                          "name": "李主任"
+                        },
+                        "hospital": {
+                          "id": 1,
+                          "name": "北京第一人民医院"
+                        },
+                        "date": "2026-07-18",
+                        "timeSlot": "08:00-09:00",
+                        "patientName": "张三",
+                        "status": 2,
+                        "fee": 18.0,
+                        "createTime": "2026-07-17T10:00:00"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-apifox-folder": "挂号订单",
+        "operationId": "getApiAppointmentsOrderNo",
+        "x-apifox-summary": "挂号订单详情"
+      }
+    },
+    "/api/appointments/{orderNo}/cancel": {
+      "post": {
+        "tags": [
+          "挂号订单"
+        ],
+        "summary": "取消挂号订单",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "orderNo",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "??",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 200
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "success"
+                    },
+                    "data": {
+                      "type": "null",
+                      "nullable": true,
+                      "example": null
+                    }
+                  }
+                },
+                "examples": {
+                  "successNull": {
+                    "summary": "??",
+                    "value": {
+                      "code": 200,
+                      "message": "success",
+                      "data": null
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-apifox-folder": "挂号订单",
+        "operationId": "postApiAppointmentsOrderNoCancel",
+        "x-apifox-summary": "取消挂号订单"
+      }
+    },
+    "/api/appointments/{orderNo}/pay": {
+      "post": {
+        "tags": [
+          "挂号订单"
+        ],
+        "summary": "挂号支付",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "orderNo",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "example": "Bearer token-1-123456789",
+            "description": "登录后携带的 Bearer Token"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PayRequest"
+              },
+              "example": {
+                "payType": 2
+              },
+              "examples": {
+                "payAppointment": {
+                  "summary": "支付挂号订单",
+                  "value": {
+                    "payType": 2
+                  }
+                },
+                "payAppointmentUnsupported": {
+                  "summary": "不支持的支付方式",
+                  "value": {
+                    "payType": 9
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 200
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "success"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "success": {
+                          "type": "boolean",
+                          "example": true
+                        },
+                        "payUrl": {
+                          "type": "string",
+                          "nullable": true,
+                          "example": null
+                        }
+                      }
+                    }
+                  }
+                },
+                "examples": {
+                  "payAppointmentSuccess": {
+                    "summary": "支付成功",
+                    "value": {
+                      "code": 200,
+                      "message": "success",
+                      "data": {
+                        "success": true,
+                        "payUrl": null
+                      }
+                    }
+                  },
+                  "payAppointmentFail": {
+                    "summary": "支付方式不支持",
+                    "value": {
+                      "code": 400,
+                      "message": "支付方式不支持",
+                      "data": null
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-apifox-folder": "挂号订单",
+        "operationId": "postApiAppointmentsOrderNoPay",
+        "x-apifox-summary": "挂号支付"
+      }
+    },
+    "/api/consults": {
+      "post": {
+        "tags": [
+          "咨询订单"
+        ],
+        "summary": "创建咨询订单",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateConsultRequest"
+              },
+              "example": {
+                "doctorId": 1,
+                "familyMemberId": 1,
+                "diseaseDesc": "复诊"
+              },
+              "examples": {
+                "createConsult": {
+                  "summary": "创建咨询订单",
+                  "value": {
+                    "doctorId": 1,
+                    "familyMemberId": 1,
+                    "diseaseDesc": "复诊"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/OrderNoResponse"
+          }
+        },
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "example": "Bearer token-1-123456789",
+            "description": "登录后携带的 Bearer Token"
+          }
+        ],
+        "x-apifox-folder": "咨询订单",
+        "operationId": "postApiConsults",
+        "x-apifox-summary": "创建咨询订单"
+      }
+    },
+    "/api/consults/my": {
+      "get": {
+        "tags": [
+          "咨询订单"
+        ],
+        "summary": "我的咨询列表",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Page"
+          },
+          {
+            "$ref": "#/components/parameters/PageSize"
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "example": "Bearer token-1-123456789",
+            "description": "登录后携带的 Bearer Token"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PageConsultResponse"
+                }
+              }
+            }
+          }
+        },
+        "x-apifox-folder": "咨询订单",
+        "operationId": "getApiConsultsMy",
+        "x-apifox-summary": "我的咨询列表"
+      }
+    },
+    "/api/consults/{orderNo}": {
+      "get": {
+        "tags": [
+          "咨询订单"
+        ],
+        "summary": "咨询订单详情",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "orderNo",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "example": "Bearer token-1-123456789",
+            "description": "登录后携带的 Bearer Token"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConsultDetailResponse"
+                },
+                "examples": {
+                  "consultDetail": {
+                    "summary": "咨询订单详情",
+                    "value": {
+                      "code": 200,
+                      "message": "success",
+                      "data": {
+                        "orderNo": "CO202607170001",
+                        "doctor": {
+                          "id": 1,
+                          "name": "李主任"
+                        },
+                        "patientName": "张三",
+                        "status": 2,
+                        "fee": 39.9,
+                        "duration": 15,
+                        "appointmentTime": "2026-07-18T10:00:00",
+                        "createTime": "2026-07-17T10:00:00"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-apifox-folder": "咨询订单",
+        "operationId": "getApiConsultsOrderNo",
+        "x-apifox-summary": "咨询订单详情"
+      }
+    },
+    "/api/consults/{orderNo}/pay": {
+      "post": {
+        "tags": [
+          "咨询订单"
+        ],
+        "summary": "咨询支付",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "orderNo",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "example": "Bearer token-1-123456789",
+            "description": "登录后携带的 Bearer Token"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PayRequest"
+              },
+              "example": {
+                "payType": 1
+              },
+              "examples": {
+                "payConsult": {
+                  "summary": "支付咨询订单",
+                  "value": {
+                    "payType": 1
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 200
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "success"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "success": {
+                          "type": "boolean",
+                          "example": true
+                        },
+                        "payUrl": {
+                          "type": "string",
+                          "nullable": true,
+                          "example": null
+                        }
+                      }
+                    }
+                  }
+                },
+                "examples": {
+                  "payConsultSuccess": {
+                    "summary": "支付成功",
+                    "value": {
+                      "code": 200,
+                      "message": "success",
+                      "data": {
+                        "success": true,
+                        "payUrl": null
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-apifox-folder": "咨询订单",
+        "operationId": "postApiConsultsOrderNoPay",
+        "x-apifox-summary": "咨询支付"
+      }
+    },
+    "/api/payments": {
+      "post": {
+        "tags": [
+          "支付"
+        ],
+        "summary": "创建支付流水",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreatePaymentRequest"
+              },
+              "example": {
+                "businessOrderNo": "AP202607170001",
+                "businessType": "appointment",
+                "amount": 18.0,
+                "payType": 2
+              },
+              "examples": {
+                "createPaymentAppointment": {
+                  "summary": "为挂号单创建支付流水",
+                  "value": {
+                    "businessOrderNo": "AP202607170001",
+                    "businessType": "appointment",
+                    "amount": 18.0,
+                    "payType": 2
+                  }
+                },
+                "createPaymentConsult": {
+                  "summary": "为咨询单创建支付流水",
+                  "value": {
+                    "businessOrderNo": "CO202607170001",
+                    "businessType": "consult",
+                    "amount": 39.9,
+                    "payType": 1
+                  }
+                },
+                "createPaymentUnsupportedBusiness": {
+                  "summary": "不支持的业务类型",
+                  "value": {
+                    "businessOrderNo": "AP202607170001",
+                    "businessType": "unknown",
+                    "amount": 18.0,
+                    "payType": 2
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 200
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "success"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "paymentNo": {
+                          "type": "string",
+                          "example": "PAY202607170001"
+                        }
+                      }
+                    }
+                  }
+                },
+                "examples": {
+                  "createPaymentSuccess": {
+                    "summary": "创建支付流水成功",
+                    "value": {
+                      "code": 200,
+                      "message": "success",
+                      "data": {
+                        "paymentNo": "PAY202607170001"
+                      }
+                    }
+                  },
+                  "createPaymentFail": {
+                    "summary": "业务类型不支持",
+                    "value": {
+                      "code": 400,
+                      "message": "业务类型不支持",
+                      "data": null
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "example": "Bearer token-1-123456789",
+            "description": "登录后携带的 Bearer Token"
+          }
+        ],
+        "x-apifox-folder": "支付",
+        "operationId": "postApiPayments",
+        "x-apifox-summary": "创建支付流水"
+      }
+    },
+    "/api/payments/callback": {
+      "post": {
+        "tags": [
+          "支付"
+        ],
+        "summary": "支付回调",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PaymentCallbackRequest"
+              },
+              "example": {
+                "paymentNo": "PAY202607170001",
+                "tradeNo": "TRADE-001",
+                "payStatus": 1
+              },
+              "examples": {
+                "paymentCallbackSuccess": {
+                  "summary": "支付回调成功",
+                  "value": {
+                    "paymentNo": "PAY202607170001",
+                    "tradeNo": "TRADE-001",
+                    "payStatus": 1
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "??",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 200
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "success"
+                    },
+                    "data": {
+                      "type": "null",
+                      "nullable": true,
+                      "example": null
+                    }
+                  }
+                },
+                "examples": {
+                  "successNull": {
+                    "summary": "??",
+                    "value": {
+                      "code": 200,
+                      "message": "success",
+                      "data": null
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-apifox-folder": "支付",
+        "operationId": "postApiPaymentsCallback",
+        "x-apifox-summary": "支付回调"
+      }
+    },
+    "/api/payments/{businessOrderNo}": {
+      "get": {
+        "tags": [
+          "支付"
+        ],
+        "summary": "支付流水详情",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "businessOrderNo",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "example": "Bearer token-1-123456789",
+            "description": "登录后携带的 Bearer Token"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentDetailResponse"
+                },
+                "examples": {
+                  "paymentDetail": {
+                    "summary": "支付流水详情",
+                    "value": {
+                      "code": 200,
+                      "message": "success",
+                      "data": {
+                        "paymentNo": "PAY202607170001",
+                        "businessOrderNo": "AP202607170001",
+                        "amount": 18.0,
+                        "payType": 2,
+                        "payStatus": 1,
+                        "payTime": "2026-07-17T10:05:00"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-apifox-folder": "支付",
+        "operationId": "getApiPaymentsBusinessOrderNo",
+        "x-apifox-summary": "支付流水详情"
+      }
+    },
+    "/api/user/profile": {
+      "get": {
+        "tags": [
+          "个人中心"
+        ],
+        "summary": "获取个人资料",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProfileResponse"
+                },
+                "examples": {
+                  "profileSuccess": {
+                    "summary": "个人资料",
+                    "value": {
+                      "code": 200,
+                      "message": "success",
+                      "data": {
+                        "id": 1,
+                        "name": "张三",
+                        "phone": "13800138000",
+                        "email": "harry@example.com",
+                        "avatar": "/avatar/user-1.png",
+                        "gender": 1,
+                        "birthday": "1990-01-01"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "example": "Bearer token-1-123456789",
+            "description": "登录后携带的 Bearer Token"
+          }
+        ],
+        "x-apifox-folder": "个人中心",
+        "operationId": "getApiUserProfile",
+        "x-apifox-summary": "获取个人资料"
+      },
+      "put": {
+        "tags": [
+          "个人中心"
+        ],
+        "summary": "更新个人资料",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateProfileRequest"
+              },
+              "example": {
+                "name": "张三丰",
+                "gender": 1,
+                "birthday": "1991-01-01",
+                "email": "new@example.com",
+                "avatar": "/avatar/new.png"
+              },
+              "examples": {
+                "updateProfile": {
+                  "summary": "更新个人资料",
+                  "value": {
+                    "name": "张三丰",
+                    "gender": 1,
+                    "birthday": "1991-01-01",
+                    "email": "new@example.com",
+                    "avatar": "/avatar/new.png"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/SuccessNull"
+          }
+        },
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "example": "Bearer token-1-123456789",
+            "description": "登录后携带的 Bearer Token"
+          }
+        ],
+        "x-apifox-folder": "个人中心",
+        "operationId": "putApiUserProfile",
+        "x-apifox-summary": "更新个人资料"
+      }
+    },
+    "/api/family-members": {
+      "get": {
+        "tags": [
+          "就诊人"
+        ],
+        "summary": "就诊人列表",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FamilyMemberListResponse"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "example": "Bearer token-1-123456789",
+            "description": "登录后携带的 Bearer Token"
+          }
+        ],
+        "x-apifox-folder": "就诊人",
+        "operationId": "getApiFamilyMembers",
+        "x-apifox-summary": "就诊人列表"
+      },
+      "post": {
+        "tags": [
+          "就诊人"
+        ],
+        "summary": "新增就诊人",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FamilyMemberRequest"
+              },
+              "example": {
+                "name": "小张",
+                "phone": "13800138111",
+                "relation": "子女",
+                "gender": 1,
+                "birthday": "2015-05-01",
+                "idCard": "110101201505010033",
+                "isDefault": 0
+              },
+              "examples": {
+                "createFamilyMember": {
+                  "summary": "新增就诊人",
+                  "value": {
+                    "name": "小张",
+                    "phone": "13800138111",
+                    "relation": "子女",
+                    "gender": 1,
+                    "birthday": "2015-05-01",
+                    "idCard": "110101201505010033",
+                    "isDefault": 0
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 200
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "success"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "integer",
+                          "format": "int64",
+                          "example": 3
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "example": "Bearer token-1-123456789",
+            "description": "登录后携带的 Bearer Token"
+          }
+        ],
+        "x-apifox-folder": "就诊人",
+        "operationId": "postApiFamilyMembers",
+        "x-apifox-summary": "新增就诊人"
+      }
+    },
+    "/api/family-members/{id}": {
+      "put": {
+        "tags": [
+          "就诊人"
+        ],
+        "summary": "更新就诊人",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "example": "Bearer token-1-123456789",
+            "description": "登录后携带的 Bearer Token"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FamilyMemberRequest"
+              },
+              "examples": {
+                "updateFamilyMember": {
+                  "summary": "更新就诊人",
+                  "value": {
+                    "name": "张三-更新",
+                    "phone": "13800138000",
+                    "relation": "本人",
+                    "gender": 1,
+                    "birthday": "1990-01-01",
+                    "idCard": "110101199001010011",
+                    "isDefault": 1
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/SuccessNull"
+          }
+        },
+        "x-apifox-folder": "就诊人",
+        "operationId": "putApiFamilyMembersId",
+        "x-apifox-summary": "更新就诊人"
+      },
+      "delete": {
+        "tags": [
+          "就诊人"
+        ],
+        "summary": "删除就诊人",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "example": "Bearer token-1-123456789",
+            "description": "登录后携带的 Bearer Token"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/SuccessNull"
+          }
+        },
+        "x-apifox-folder": "就诊人",
+        "operationId": "deleteApiFamilyMembersId",
+        "x-apifox-summary": "删除就诊人"
+      }
+    },
+    "/api/reviews/my": {
+      "get": {
+        "tags": [
+          "评价"
+        ],
+        "summary": "我的评价列表",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Page"
+          },
+          {
+            "$ref": "#/components/parameters/PageSize"
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "example": "Bearer token-1-123456789",
+            "description": "登录后携带的 Bearer Token"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PageReviewResponse"
+                }
+              }
+            }
+          }
+        },
+        "x-apifox-folder": "评价",
+        "operationId": "getApiReviewsMy",
+        "x-apifox-summary": "我的评价列表"
+      }
+    },
+    "/api/reviews": {
+      "post": {
+        "tags": [
+          "评价"
+        ],
+        "summary": "提交评价",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateReviewRequest"
+              },
+              "example": {
+                "orderType": 1,
+                "orderId": 1,
+                "doctorId": 1,
+                "content": "服务很好",
+                "rating": 5
+              },
+              "examples": {
+                "createReview": {
+                  "summary": "提交评价",
+                  "value": {
+                    "orderType": 1,
+                    "orderId": 1,
+                    "doctorId": 1,
+                    "content": "服务很好",
+                    "rating": 5
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 200
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "success"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "integer",
+                          "format": "int64",
+                          "example": 2
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "example": "Bearer token-1-123456789",
+            "description": "登录后携带的 Bearer Token"
+          }
+        ],
+        "x-apifox-folder": "评价",
+        "operationId": "postApiReviews",
+        "x-apifox-summary": "提交评价"
+      }
+    },
+    "/api/messages": {
+      "get": {
+        "tags": [
+          "消息"
+        ],
+        "summary": "消息列表",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Page"
+          },
+          {
+            "$ref": "#/components/parameters/PageSize"
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "example": "Bearer token-1-123456789",
+            "description": "登录后携带的 Bearer Token"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PageMessageResponse"
+                }
+              }
+            }
+          }
+        },
+        "x-apifox-folder": "消息",
+        "operationId": "getApiMessages",
+        "x-apifox-summary": "消息列表"
+      }
+    },
+    "/api/messages/{id}/read": {
+      "post": {
+        "tags": [
+          "消息"
+        ],
+        "summary": "标记消息已读",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "example": "Bearer token-1-123456789",
+            "description": "登录后携带的 Bearer Token"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/SuccessNull"
+          }
+        },
+        "x-apifox-folder": "消息",
+        "operationId": "postApiMessagesIdRead",
+        "x-apifox-summary": "标记消息已读"
+      }
+    },
+    "/api/messages/unread-count": {
+      "get": {
+        "tags": [
+          "消息"
+        ],
+        "summary": "未读消息数",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 200
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "success"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "count": {
+                          "type": "integer",
+                          "example": 1
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "example": "Bearer token-1-123456789",
+            "description": "登录后携带的 Bearer Token"
+          }
+        ],
+        "x-apifox-folder": "消息",
+        "operationId": "getApiMessagesUnreadCount",
+        "x-apifox-summary": "未读消息数"
+      }
+    },
+    "/api/feedbacks": {
+      "get": {
+        "tags": [
+          "反馈"
+        ],
+        "summary": "反馈列表",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Page"
+          },
+          {
+            "$ref": "#/components/parameters/PageSize"
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "example": "Bearer token-1-123456789",
+            "description": "登录后携带的 Bearer Token"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PageFeedbackResponse"
+                }
+              }
+            }
+          }
+        },
+        "x-apifox-folder": "反馈",
+        "operationId": "getApiFeedbacks",
+        "x-apifox-summary": "反馈列表"
+      },
+      "post": {
+        "tags": [
+          "反馈"
+        ],
+        "summary": "提交反馈",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateFeedbackRequest"
+              },
+              "example": {
+                "type": 2,
+                "content": "客服响应慢",
+                "images": [
+                  "/img/x.png",
+                  "/img/y.png"
+                ]
+              },
+              "examples": {
+                "createFeedback": {
+                  "summary": "提交反馈",
+                  "value": {
+                    "type": 2,
+                    "content": "客服响应慢",
+                    "images": [
+                      "/img/x.png",
+                      "/img/y.png"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 200
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "success"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "integer",
+                          "format": "int64",
+                          "example": 2
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "example": "Bearer token-1-123456789",
+            "description": "登录后携带的 Bearer Token"
+          }
+        ],
+        "x-apifox-folder": "反馈",
+        "operationId": "postApiFeedbacks",
+        "x-apifox-summary": "提交反馈"
+      }
+    },
+    "/api/follow/my": {
+      "get": {
+        "tags": [
+          "关注"
+        ],
+        "summary": "我的关注列表",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "type",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "enum": [
+                1,
+                2,
+                3
+              ]
+            }
+          },
+          {
+            "$ref": "#/components/parameters/Page"
+          },
+          {
+            "$ref": "#/components/parameters/PageSize"
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "example": "Bearer token-1-123456789",
+            "description": "登录后携带的 Bearer Token"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PageFollowResponse"
+                }
+              }
+            }
+          }
+        },
+        "x-apifox-folder": "关注",
+        "operationId": "getApiFollowMy",
+        "x-apifox-summary": "我的关注列表"
+      }
+    },
+    "/api/follow/{type}/{id}": {
+      "post": {
+        "tags": [
+          "关注"
+        ],
+        "summary": "新增关注",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "type",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "enum": [
+                1,
+                2,
+                3
+              ]
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "example": "Bearer token-1-123456789",
+            "description": "登录后携带的 Bearer Token"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 200
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "success"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "integer",
+                          "format": "int64",
+                          "example": 4
+                        }
+                      }
+                    }
+                  }
+                },
+                "examples": {
+                  "createFollow": {
+                    "summary": "关注成功",
+                    "value": {
+                      "code": 200,
+                      "message": "success",
+                      "data": {
+                        "id": 4
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-apifox-folder": "关注",
+        "operationId": "postApiFollowTypeId",
+        "x-apifox-summary": "新增关注"
+      },
+      "delete": {
+        "tags": [
+          "关注"
+        ],
+        "summary": "取消关注",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "type",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "enum": [
+                1,
+                2,
+                3
+              ]
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "example": "Bearer token-1-123456789",
+            "description": "登录后携带的 Bearer Token"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/SuccessNull"
+          }
+        },
+        "x-apifox-folder": "关注",
+        "operationId": "deleteApiFollowTypeId",
+        "x-apifox-summary": "取消关注"
+      }
+    },
+    "/api/configs/{key}": {
+      "get": {
+        "tags": [
+          "系统"
+        ],
+        "summary": "获取系统配置",
+        "parameters": [
+          {
+            "name": "key",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 200
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "success"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "key": {
+                          "type": "string",
+                          "example": "paymentMethods"
+                        },
+                        "value": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "label": {
+                                "type": "string",
+                                "example": "支付宝"
+                              },
+                              "value": {
+                                "type": "integer",
+                                "example": 1
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "examples": {
+                  "paymentMethods": {
+                    "summary": "支付方式配置",
+                    "value": {
+                      "code": 200,
+                      "message": "success",
+                      "data": {
+                        "key": "paymentMethods",
+                        "value": [
+                          {
+                            "label": "支付宝",
+                            "value": 1
+                          },
+                          {
+                            "label": "微信",
+                            "value": 2
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-apifox-folder": "系统",
+        "operationId": "getApiConfigsKey",
+        "x-apifox-summary": "获取系统配置"
+      }
+    },
+    "/api/health": {
+      "get": {
+        "tags": [
+          "系统"
+        ],
+        "summary": "健康检查",
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 200
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "success"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "status": {
+                          "type": "string",
+                          "example": "UP"
+                        },
+                        "timestamp": {
+                          "type": "string",
+                          "example": "2026-07-17T12:00:00"
+                        }
+                      }
+                    }
+                  }
+                },
+                "examples": {
+                  "healthUp": {
+                    "summary": "健康检查通过",
+                    "value": {
+                      "code": 200,
+                      "message": "success",
+                      "data": {
+                        "status": "UP",
+                        "timestamp": "2026-07-17T12:00:00"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-apifox-folder": "系统",
+        "operationId": "getApiHealth",
+        "x-apifox-summary": "健康检查"
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "parameters": {
+      "Page": {
+        "name": "page",
+        "in": "query",
+        "schema": {
+          "type": "integer",
+          "default": 1
+        }
+      },
+      "PageSize": {
+        "name": "pageSize",
+        "in": "query",
+        "schema": {
+          "type": "integer",
+          "default": 10
+        }
+      }
+    },
+    "responses": {
+      "SuccessNull": {
+        "description": "成功",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "example": 200
+                },
+                "message": {
+                  "type": "string",
+                  "example": "success"
+                },
+                "data": {
+                  "nullable": true,
+                  "example": null
+                }
+              }
+            }
+          }
+        }
+      },
+      "OrderNoResponse": {
+        "description": "成功",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "example": 200
+                },
+                "message": {
+                  "type": "string",
+                  "example": "success"
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "orderNo": {
+                      "type": "string",
+                      "example": "AP202607170002"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "PayResultResponse": {
+        "description": "成功",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "example": 200
+                },
+                "message": {
+                  "type": "string",
+                  "example": "success"
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "payUrl": {
+                      "type": "string",
+                      "nullable": true,
+                      "example": null
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "schemas": {
+      "RegisterRequest": {
+        "type": "object",
+        "required": [
+          "phone",
+          "password",
+          "confirmPassword"
+        ],
+        "properties": {
+          "phone": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          },
+          "confirmPassword": {
+            "type": "string"
+          },
+          "captcha": {
+            "type": "string"
+          }
+        }
+      },
+      "LoginRequest": {
+        "type": "object",
+        "required": [
+          "phone",
+          "password"
+        ],
+        "properties": {
+          "phone": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          }
+        }
+      },
+      "ChangePasswordRequest": {
+        "type": "object",
+        "required": [
+          "oldPassword",
+          "newPassword",
+          "confirmPassword"
+        ],
+        "properties": {
+          "oldPassword": {
+            "type": "string"
+          },
+          "newPassword": {
+            "type": "string"
+          },
+          "confirmPassword": {
+            "type": "string"
+          }
+        }
+      },
+      "CreateAppointmentRequest": {
+        "type": "object",
+        "required": [
+          "scheduleId",
+          "familyMemberId"
+        ],
+        "properties": {
+          "scheduleId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "familyMemberId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "diseaseDesc": {
+            "type": "string"
+          }
+        }
+      },
+      "CreateConsultRequest": {
+        "type": "object",
+        "required": [
+          "doctorId",
+          "familyMemberId"
+        ],
+        "properties": {
+          "doctorId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "familyMemberId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "diseaseDesc": {
+            "type": "string"
+          }
+        }
+      },
+      "PayRequest": {
+        "type": "object",
+        "required": [
+          "payType"
+        ],
+        "properties": {
+          "payType": {
+            "type": "integer",
+            "example": 1
+          }
+        }
+      },
+      "CreatePaymentRequest": {
+        "type": "object",
+        "required": [
+          "businessOrderNo",
+          "businessType",
+          "amount",
+          "payType"
+        ],
+        "properties": {
+          "businessOrderNo": {
+            "type": "string"
+          },
+          "businessType": {
+            "type": "string",
+            "enum": [
+              "appointment",
+              "consult"
+            ]
+          },
+          "amount": {
+            "type": "number",
+            "format": "double"
+          },
+          "payType": {
+            "type": "integer"
+          }
+        }
+      },
+      "PaymentCallbackRequest": {
+        "type": "object",
+        "required": [
+          "paymentNo",
+          "tradeNo",
+          "payStatus"
+        ],
+        "properties": {
+          "paymentNo": {
+            "type": "string"
+          },
+          "tradeNo": {
+            "type": "string"
+          },
+          "payStatus": {
+            "type": "integer"
+          }
+        }
+      },
+      "UpdateProfileRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "gender": {
+            "type": "integer"
+          },
+          "birthday": {
+            "type": "string",
+            "format": "date"
+          },
+          "email": {
+            "type": "string"
+          },
+          "avatar": {
+            "type": "string"
+          }
+        }
+      },
+      "FamilyMemberRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "phone": {
+            "type": "string"
+          },
+          "relation": {
+            "type": "string"
+          },
+          "gender": {
+            "type": "integer"
+          },
+          "birthday": {
+            "type": "string",
+            "format": "date"
+          },
+          "idCard": {
+            "type": "string"
+          },
+          "isDefault": {
+            "type": "integer"
+          }
+        }
+      },
+      "CreateReviewRequest": {
+        "type": "object",
+        "properties": {
+          "orderType": {
+            "type": "integer"
+          },
+          "orderId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "doctorId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "content": {
+            "type": "string"
+          },
+          "rating": {
+            "type": "integer"
+          }
+        }
+      },
+      "CreateFeedbackRequest": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "integer"
+          },
+          "content": {
+            "type": "string"
+          },
+          "images": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "UserBrief": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "example": 1
+          },
+          "name": {
+            "type": "string",
+            "example": "张三"
+          },
+          "phone": {
+            "type": "string",
+            "example": "13800138000"
+          },
+          "avatar": {
+            "type": "string",
+            "example": "/avatar/user-1.png"
+          }
+        }
+      },
+      "PageHospitalResponse": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "example": 200
+          },
+          "message": {
+            "type": "string",
+            "example": "success"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "records": {
+                "type": "array",
+                "items": {
+                  "type": "object"
+                }
+              },
+              "total": {
+                "type": "integer",
+                "example": 2
+              },
+              "page": {
+                "type": "integer",
+                "example": 1
+              },
+              "pageSize": {
+                "type": "integer",
+                "example": 10
+              }
+            }
+          }
+        }
+      },
+      "HospitalDetailResponse": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "example": 200
+          },
+          "message": {
+            "type": "string",
+            "example": "success"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "example": 1
+              },
+              "name": {
+                "type": "string",
+                "example": "北京第一人民医院"
+              },
+              "level": {
+                "type": "string",
+                "example": "三甲"
+              },
+              "address": {
+                "type": "string"
+              },
+              "phone": {
+                "type": "string"
+              },
+              "intro": {
+                "type": "string"
+              },
+              "image": {
+                "type": "string"
+              },
+              "province": {
+                "type": "string"
+              },
+              "city": {
+                "type": "string"
+              },
+              "departmentCount": {
+                "type": "integer"
+              },
+              "doctorCount": {
+                "type": "integer"
+              }
+            }
+          }
+        }
+      },
+      "DepartmentTreeResponse": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "example": 200
+          },
+          "message": {
+            "type": "string",
+            "example": "success"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "children": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer"
+                      },
+                      "name": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "PageDoctorResponse": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "example": 200
+          },
+          "message": {
+            "type": "string",
+            "example": "success"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "records": {
+                "type": "array",
+                "items": {
+                  "type": "object"
+                }
+              },
+              "total": {
+                "type": "integer"
+              },
+              "page": {
+                "type": "integer"
+              },
+              "pageSize": {
+                "type": "integer"
+              }
+            }
+          }
+        }
+      },
+      "DoctorDetailResponse": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "example": 200
+          },
+          "message": {
+            "type": "string",
+            "example": "success"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer"
+              },
+              "name": {
+                "type": "string"
+              },
+              "title": {
+                "type": "string"
+              },
+              "hospitalName": {
+                "type": "string"
+              },
+              "departmentName": {
+                "type": "string"
+              },
+              "expertise": {
+                "type": "string"
+              },
+              "intro": {
+                "type": "string"
+              },
+              "avatar": {
+                "type": "string"
+              },
+              "consultPrice": {
+                "type": "number"
+              },
+              "registrationPrice": {
+                "type": "number"
+              },
+              "followCount": {
+                "type": "integer"
+              },
+              "rating": {
+                "type": "number"
+              }
+            }
+          }
+        }
+      },
+      "ScheduleListResponse": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "example": 200
+          },
+          "message": {
+            "type": "string",
+            "example": "success"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer"
+                },
+                "scheduleDate": {
+                  "type": "string",
+                  "format": "date"
+                },
+                "weekDay": {
+                  "type": "string"
+                },
+                "timeSlot": {
+                  "type": "string"
+                },
+                "remainCount": {
+                  "type": "integer"
+                },
+                "totalCount": {
+                  "type": "integer"
+                },
+                "registrationPrice": {
+                  "type": "number"
+                },
+                "status": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        }
+      },
+      "PageReviewResponse": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "example": 200
+          },
+          "message": {
+            "type": "string",
+            "example": "success"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "records": {
+                "type": "array",
+                "items": {
+                  "type": "object"
+                }
+              },
+              "total": {
+                "type": "integer"
+              },
+              "page": {
+                "type": "integer"
+              },
+              "pageSize": {
+                "type": "integer"
+              }
+            }
+          }
+        }
+      },
+      "PageDiseaseResponse": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "example": 200
+          },
+          "message": {
+            "type": "string",
+            "example": "success"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "records": {
+                "type": "array",
+                "items": {
+                  "type": "object"
+                }
+              },
+              "total": {
+                "type": "integer"
+              },
+              "page": {
+                "type": "integer"
+              },
+              "pageSize": {
+                "type": "integer"
+              }
+            }
+          }
+        }
+      },
+      "DiseaseDetailResponse": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "example": 200
+          },
+          "message": {
+            "type": "string",
+            "example": "success"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer"
+              },
+              "name": {
+                "type": "string"
+              },
+              "alias": {
+                "type": "string"
+              },
+              "location": {
+                "type": "string"
+              },
+              "description": {
+                "type": "string"
+              },
+              "symptoms": {
+                "type": "string"
+              },
+              "treatment": {
+                "type": "string"
+              },
+              "treatmentPeriod": {
+                "type": "string"
+              },
+              "cureRate": {
+                "type": "string"
+              },
+              "examinations": {
+                "type": "string"
+              },
+              "departmentId": {
+                "type": "integer"
+              },
+              "recommendDoctors": {
+                "type": "array",
+                "items": {
+                  "type": "object"
+                }
+              },
+              "recommendArticles": {
+                "type": "array",
+                "items": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      },
+      "PageArticleResponse": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "example": 200
+          },
+          "message": {
+            "type": "string",
+            "example": "success"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "records": {
+                "type": "array",
+                "items": {
+                  "type": "object"
+                }
+              },
+              "total": {
+                "type": "integer"
+              },
+              "page": {
+                "type": "integer"
+              },
+              "pageSize": {
+                "type": "integer"
+              }
+            }
+          }
+        }
+      },
+      "ArticleDetailResponse": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "example": 200
+          },
+          "message": {
+            "type": "string",
+            "example": "success"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer"
+              },
+              "title": {
+                "type": "string"
+              },
+              "summary": {
+                "type": "string"
+              },
+              "content": {
+                "type": "string"
+              },
+              "image": {
+                "type": "string"
+              },
+              "author": {
+                "type": "string"
+              },
+              "publishTime": {
+                "type": "string"
+              },
+              "departmentName": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "PageAppointmentResponse": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "example": 200
+          },
+          "message": {
+            "type": "string",
+            "example": "success"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "records": {
+                "type": "array",
+                "items": {
+                  "type": "object"
+                }
+              },
+              "total": {
+                "type": "integer"
+              },
+              "page": {
+                "type": "integer"
+              },
+              "pageSize": {
+                "type": "integer"
+              }
+            }
+          }
+        }
+      },
+      "AppointmentDetailResponse": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "example": 200
+          },
+          "message": {
+            "type": "string",
+            "example": "success"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "orderNo": {
+                "type": "string"
+              },
+              "doctor": {
+                "type": "object"
+              },
+              "hospital": {
+                "type": "object"
+              },
+              "date": {
+                "type": "string",
+                "format": "date"
+              },
+              "timeSlot": {
+                "type": "string"
+              },
+              "patientName": {
+                "type": "string"
+              },
+              "status": {
+                "type": "integer"
+              },
+              "fee": {
+                "type": "number"
+              },
+              "createTime": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "PageConsultResponse": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "example": 200
+          },
+          "message": {
+            "type": "string",
+            "example": "success"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "records": {
+                "type": "array",
+                "items": {
+                  "type": "object"
+                }
+              },
+              "total": {
+                "type": "integer"
+              },
+              "page": {
+                "type": "integer"
+              },
+              "pageSize": {
+                "type": "integer"
+              }
+            }
+          }
+        }
+      },
+      "ConsultDetailResponse": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "example": 200
+          },
+          "message": {
+            "type": "string",
+            "example": "success"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "orderNo": {
+                "type": "string"
+              },
+              "doctor": {
+                "type": "object"
+              },
+              "patientName": {
+                "type": "string"
+              },
+              "status": {
+                "type": "integer"
+              },
+              "fee": {
+                "type": "number"
+              },
+              "duration": {
+                "type": "integer"
+              },
+              "appointmentTime": {
+                "type": "string"
+              },
+              "createTime": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "PaymentDetailResponse": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "example": 200
+          },
+          "message": {
+            "type": "string",
+            "example": "success"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "paymentNo": {
+                "type": "string"
+              },
+              "businessOrderNo": {
+                "type": "string"
+              },
+              "amount": {
+                "type": "number"
+              },
+              "payType": {
+                "type": "integer"
+              },
+              "payStatus": {
+                "type": "integer"
+              },
+              "payTime": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "ProfileResponse": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "example": 200
+          },
+          "message": {
+            "type": "string",
+            "example": "success"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer"
+              },
+              "name": {
+                "type": "string"
+              },
+              "phone": {
+                "type": "string"
+              },
+              "email": {
+                "type": "string"
+              },
+              "avatar": {
+                "type": "string"
+              },
+              "gender": {
+                "type": "integer"
+              },
+              "birthday": {
+                "type": "string",
+                "format": "date"
+              }
+            }
+          }
+        }
+      },
+      "FamilyMemberListResponse": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "example": 200
+          },
+          "message": {
+            "type": "string",
+            "example": "success"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "phone": {
+                  "type": "string"
+                },
+                "relation": {
+                  "type": "string"
+                },
+                "gender": {
+                  "type": "integer"
+                },
+                "birthday": {
+                  "type": "string",
+                  "format": "date"
+                },
+                "idCard": {
+                  "type": "string"
+                },
+                "isDefault": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        }
+      },
+      "PageMessageResponse": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "example": 200
+          },
+          "message": {
+            "type": "string",
+            "example": "success"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "records": {
+                "type": "array",
+                "items": {
+                  "type": "object"
+                }
+              },
+              "total": {
+                "type": "integer"
+              },
+              "page": {
+                "type": "integer"
+              },
+              "pageSize": {
+                "type": "integer"
+              }
+            }
+          }
+        }
+      },
+      "PageFeedbackResponse": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "example": 200
+          },
+          "message": {
+            "type": "string",
+            "example": "success"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "records": {
+                "type": "array",
+                "items": {
+                  "type": "object"
+                }
+              },
+              "total": {
+                "type": "integer"
+              },
+              "page": {
+                "type": "integer"
+              },
+              "pageSize": {
+                "type": "integer"
+              }
+            }
+          }
+        }
+      },
+      "PageFollowResponse": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "example": 200
+          },
+          "message": {
+            "type": "string",
+            "example": "success"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "records": {
+                "type": "array",
+                "items": {
+                  "type": "object"
+                }
+              },
+              "total": {
+                "type": "integer"
+              },
+              "page": {
+                "type": "integer"
+              },
+              "pageSize": {
+                "type": "integer"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.whlg.hospital.mapper.FamilyMemberMapper">
+
+    <resultMap id="BaseResultMap" type="com.whlg.hospital.entity.FamilyMember">
+        <id column="id" property="id"/>
+        <result column="user_id" property="userId"/>
+        <result column="name" property="name"/>
+        <result column="gender" property="gender"/>
+        <result column="birthday" property="birthday"/>
+        <result column="phone" property="phone"/>
+        <result column="id_card" property="idCard"/>
+        <result column="relation" property="relation"/>
+        <result column="is_default" property="isDefault"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, user_id, name, gender, birthday, phone, id_card, relation, is_default, create_time, update_time
+    </sql>
+
+    <select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.Long">
+        select <include refid="Base_Column_List"/> from t_family_member where id = #{id}
+    </select>
+
+    <select id="selectAll" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/> from t_family_member order by id desc
+    </select>
+
+    <insert id="insert" parameterType="com.whlg.hospital.entity.FamilyMember" useGeneratedKeys="true" keyProperty="id">
+        insert into t_family_member (
+            user_id, name, gender, birthday, phone, id_card, relation, is_default, create_time, update_time
+        ) values (
+            #{userId}, #{name}, #{gender}, #{birthday}, #{phone}, #{idCard}, #{relation}, #{isDefault}, #{createTime}, #{updateTime}
+        )
+    </insert>
+
+    <update id="updateById">
+        update t_family_member
+        set user_id = #{et.userId},
+            name = #{et.name},
+            gender = #{et.gender},
+            birthday = #{et.birthday},
+            phone = #{et.phone},
+            id_card = #{et.idCard},
+            relation = #{et.relation},
+            is_default = #{et.isDefault},
+            create_time = #{et.createTime},
+            update_time = #{et.updateTime}
+        where id = #{et.id}
+    </update>
+
+    <delete id="deleteById" parameterType="java.lang.Long">
+        delete from t_family_member where id = #{id}
+    </delete>
+
+</mapper>

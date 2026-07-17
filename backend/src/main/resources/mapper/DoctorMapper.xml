@@ -1,19 +1,74 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE mapper
-        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-
-<!-- SQL映射文件 *Mapper.xml命名 -->
-<!-- namespace='命名空间的名字,唯一' -->
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.whlg.hospital.mapper.DoctorMapper">
 
-    <!-- 单个表的增删改查不需要再写sql语句,如果出现多表联表查询则需要编写SQL语句,可以再该XML配置文件中编写 -->
+    <resultMap id="BaseResultMap" type="com.whlg.hospital.entity.Doctor">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="gender" property="gender"/>
+        <result column="title" property="title"/>
+        <result column="department_id" property="departmentId"/>
+        <result column="hospital_id" property="hospitalId"/>
+        <result column="avatar" property="avatar"/>
+        <result column="phone" property="phone"/>
+        <result column="intro" property="intro"/>
+        <result column="expertise" property="expertise"/>
+        <result column="consult_count" property="consultCount"/>
+        <result column="rating" property="rating"/>
+        <result column="follow_count" property="followCount"/>
+        <result column="online_status" property="onlineStatus"/>
+        <result column="price" property="price"/>
+        <result column="registration_price" property="registrationPrice"/>
+        <result column="status" property="status"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+    </resultMap>
 
-    <select id="selectDoctorVoBy" parameterType="int" resultType="DoctorVo" >
-        SELECT d.id,d.name doctorName,d.title,d.avatar,h.name hospitalName,dt.name departmentName
-        FROM t_doctor d INNER JOIN t_hospital h ON d.hospital_id=h.id
-                        INNER JOIN t_department dt ON d.department_id=dt.id
-        limit #{limit}
+    <sql id="Base_Column_List">
+        id, name, gender, title, department_id, hospital_id, avatar, phone, intro, expertise, consult_count, rating, follow_count, online_status, price, registration_price, status, create_time, update_time
+    </sql>
+
+    <select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.Long">
+        select <include refid="Base_Column_List"/> from t_doctor where id = #{id}
     </select>
+
+    <select id="selectAll" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/> from t_doctor order by id desc
+    </select>
+
+    <insert id="insert" parameterType="com.whlg.hospital.entity.Doctor" useGeneratedKeys="true" keyProperty="id">
+        insert into t_doctor (
+            name, gender, title, department_id, hospital_id, avatar, phone, intro, expertise, consult_count, rating, follow_count, online_status, price, registration_price, status, create_time, update_time
+        ) values (
+            #{name}, #{gender}, #{title}, #{departmentId}, #{hospitalId}, #{avatar}, #{phone}, #{intro}, #{expertise}, #{consultCount}, #{rating}, #{followCount}, #{onlineStatus}, #{price}, #{registrationPrice}, #{status}, #{createTime}, #{updateTime}
+        )
+    </insert>
+
+    <update id="updateById">
+        update t_doctor
+        set name = #{et.name},
+            gender = #{et.gender},
+            title = #{et.title},
+            department_id = #{et.departmentId},
+            hospital_id = #{et.hospitalId},
+            avatar = #{et.avatar},
+            phone = #{et.phone},
+            intro = #{et.intro},
+            expertise = #{et.expertise},
+            consult_count = #{et.consultCount},
+            rating = #{et.rating},
+            follow_count = #{et.followCount},
+            online_status = #{et.onlineStatus},
+            price = #{et.price},
+            registration_price = #{et.registrationPrice},
+            status = #{et.status},
+            create_time = #{et.createTime},
+            update_time = #{et.updateTime}
+        where id = #{et.id}
+    </update>
+
+    <delete id="deleteById" parameterType="java.lang.Long">
+        delete from t_doctor where id = #{id}
+    </delete>
 
 </mapper>

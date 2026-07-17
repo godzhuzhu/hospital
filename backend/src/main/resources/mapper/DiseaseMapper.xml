@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.whlg.hospital.mapper.DiseaseMapper">
+
+    <resultMap id="BaseResultMap" type="com.whlg.hospital.entity.Disease">
+        <id column="id" property="id"/>
+        <result column="department_id" property="departmentId"/>
+        <result column="name" property="name"/>
+        <result column="description" property="description"/>
+        <result column="alias" property="alias"/>
+        <result column="location" property="location"/>
+        <result column="treatment" property="treatment"/>
+        <result column="symptoms" property="symptoms"/>
+        <result column="treatment_period" property="treatmentPeriod"/>
+        <result column="cure_rate" property="cureRate"/>
+        <result column="examinations" property="examinations"/>
+        <result column="follow_count" property="followCount"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, department_id, name, description, alias, location, treatment, symptoms, treatment_period, cure_rate, examinations, follow_count, create_time, update_time
+    </sql>
+
+    <select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.Long">
+        select <include refid="Base_Column_List"/> from t_disease where id = #{id}
+    </select>
+
+    <select id="selectAll" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/> from t_disease order by id desc
+    </select>
+
+    <insert id="insert" parameterType="com.whlg.hospital.entity.Disease" useGeneratedKeys="true" keyProperty="id">
+        insert into t_disease (
+            department_id, name, description, alias, location, treatment, symptoms, treatment_period, cure_rate, examinations, follow_count, create_time, update_time
+        ) values (
+            #{departmentId}, #{name}, #{description}, #{alias}, #{location}, #{treatment}, #{symptoms}, #{treatmentPeriod}, #{cureRate}, #{examinations}, #{followCount}, #{createTime}, #{updateTime}
+        )
+    </insert>
+
+    <update id="updateById">
+        update t_disease
+        set department_id = #{et.departmentId},
+            name = #{et.name},
+            description = #{et.description},
+            alias = #{et.alias},
+            location = #{et.location},
+            treatment = #{et.treatment},
+            symptoms = #{et.symptoms},
+            treatment_period = #{et.treatmentPeriod},
+            cure_rate = #{et.cureRate},
+            examinations = #{et.examinations},
+            follow_count = #{et.followCount},
+            create_time = #{et.createTime},
+            update_time = #{et.updateTime}
+        where id = #{et.id}
+    </update>
+
+    <delete id="deleteById" parameterType="java.lang.Long">
+        delete from t_disease where id = #{id}
+    </delete>
+
+</mapper>

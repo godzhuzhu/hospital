@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.whlg.hospital.mapper.ArticleMapper">
+
+    <resultMap id="BaseResultMap" type="com.whlg.hospital.entity.Article">
+        <id column="id" property="id"/>
+        <result column="title" property="title"/>
+        <result column="summary" property="summary"/>
+        <result column="content" property="content"/>
+        <result column="department_id" property="departmentId"/>
+        <result column="author" property="author"/>
+        <result column="image" property="image"/>
+        <result column="views" property="views"/>
+        <result column="status" property="status"/>
+        <result column="publish_time" property="publishTime"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, title, summary, content, department_id, author, image, views, status, publish_time, create_time, update_time
+    </sql>
+
+    <select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.Long">
+        select <include refid="Base_Column_List"/> from t_article where id = #{id}
+    </select>
+
+    <select id="selectAll" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/> from t_article order by id desc
+    </select>
+
+    <insert id="insert" parameterType="com.whlg.hospital.entity.Article" useGeneratedKeys="true" keyProperty="id">
+        insert into t_article (
+            title, summary, content, department_id, author, image, views, status, publish_time, create_time, update_time
+        ) values (
+            #{title}, #{summary}, #{content}, #{departmentId}, #{author}, #{image}, #{views}, #{status}, #{publishTime}, #{createTime}, #{updateTime}
+        )
+    </insert>
+
+    <update id="updateById">
+        update t_article
+        set title = #{et.title},
+            summary = #{et.summary},
+            content = #{et.content},
+            department_id = #{et.departmentId},
+            author = #{et.author},
+            image = #{et.image},
+            views = #{et.views},
+            status = #{et.status},
+            publish_time = #{et.publishTime},
+            create_time = #{et.createTime},
+            update_time = #{et.updateTime}
+        where id = #{et.id}
+    </update>
+
+    <delete id="deleteById" parameterType="java.lang.Long">
+        delete from t_article where id = #{id}
+    </delete>
+
+</mapper>

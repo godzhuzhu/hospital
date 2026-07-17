@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.whlg.hospital.mapper.ConsultMapper">
+
+    <resultMap id="BaseResultMap" type="com.whlg.hospital.entity.Consult">
+        <id column="id" property="id"/>
+        <result column="order_no" property="orderNo"/>
+        <result column="user_id" property="userId"/>
+        <result column="doctor_id" property="doctorId"/>
+        <result column="patient_name" property="patientName"/>
+        <result column="patient_phone" property="patientPhone"/>
+        <result column="disease_desc" property="diseaseDesc"/>
+        <result column="appointment_time" property="appointmentTime"/>
+        <result column="duration" property="duration"/>
+        <result column="amount" property="amount"/>
+        <result column="status" property="status"/>
+        <result column="pay_time" property="payTime"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, order_no, user_id, doctor_id, patient_name, patient_phone, disease_desc, appointment_time, duration, amount, status, pay_time, create_time, update_time
+    </sql>
+
+    <select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.Long">
+        select <include refid="Base_Column_List"/> from t_consult where id = #{id}
+    </select>
+
+    <select id="selectAll" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/> from t_consult order by id desc
+    </select>
+
+    <insert id="insert" parameterType="com.whlg.hospital.entity.Consult" useGeneratedKeys="true" keyProperty="id">
+        insert into t_consult (
+            order_no, user_id, doctor_id, patient_name, patient_phone, disease_desc, appointment_time, duration, amount, status, pay_time, create_time, update_time
+        ) values (
+            #{orderNo}, #{userId}, #{doctorId}, #{patientName}, #{patientPhone}, #{diseaseDesc}, #{appointmentTime}, #{duration}, #{amount}, #{status}, #{payTime}, #{createTime}, #{updateTime}
+        )
+    </insert>
+
+    <update id="updateById">
+        update t_consult
+        set order_no = #{et.orderNo},
+            user_id = #{et.userId},
+            doctor_id = #{et.doctorId},
+            patient_name = #{et.patientName},
+            patient_phone = #{et.patientPhone},
+            disease_desc = #{et.diseaseDesc},
+            appointment_time = #{et.appointmentTime},
+            duration = #{et.duration},
+            amount = #{et.amount},
+            status = #{et.status},
+            pay_time = #{et.payTime},
+            create_time = #{et.createTime},
+            update_time = #{et.updateTime}
+        where id = #{et.id}
+    </update>
+
+    <delete id="deleteById" parameterType="java.lang.Long">
+        delete from t_consult where id = #{id}
+    </delete>
+
+</mapper>

@@ -1,17 +1,14 @@
 package com.whlg.hospital.util;
 
-/**
- * @Author: wanjianhong
- * @Version: 1.0
- * @Description:
- * 自定义的响应状态码
- */
 public class StatusCode {
 
-    public static final int OK=20000;//成功
-    public static final int ERROR =20001;//失败
-    public static final int TOKEN_EXPIRE =30001;//token非法或已失效
+    public static final int OK = 200;
+    public static final int BAD_REQUEST = 400;
+    public static final int UNAUTHORIZED = 401;
+    public static final int FORBIDDEN = 403;
+    public static final int NOT_FOUND = 404;
+    public static final int ERROR = 500;
 
-    //根据实际需求可添加扩展
-
+    private StatusCode() {
+    }
 }

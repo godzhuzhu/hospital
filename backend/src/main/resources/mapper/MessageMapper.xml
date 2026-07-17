@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.whlg.hospital.mapper.MessageMapper">
+
+    <resultMap id="BaseResultMap" type="com.whlg.hospital.entity.Message">
+        <id column="id" property="id"/>
+        <result column="user_id" property="userId"/>
+        <result column="title" property="title"/>
+        <result column="content" property="content"/>
+        <result column="is_read" property="isRead"/>
+        <result column="create_time" property="createTime"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, user_id, title, content, is_read, create_time
+    </sql>
+
+    <select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.Long">
+        select <include refid="Base_Column_List"/> from t_message where id = #{id}
+    </select>
+
+    <select id="selectAll" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/> from t_message order by id desc
+    </select>
+
+    <insert id="insert" parameterType="com.whlg.hospital.entity.Message" useGeneratedKeys="true" keyProperty="id">
+        insert into t_message (
+            user_id, title, content, is_read, create_time
+        ) values (
+            #{userId}, #{title}, #{content}, #{isRead}, #{createTime}
+        )
+    </insert>
+
+    <update id="updateById">
+        update t_message
+        set user_id = #{et.userId},
+            title = #{et.title},
+            content = #{et.content},
+            is_read = #{et.isRead},
+            create_time = #{et.createTime}
+        where id = #{et.id}
+    </update>
+
+    <delete id="deleteById" parameterType="java.lang.Long">
+        delete from t_message where id = #{id}
+    </delete>
+
+</mapper>

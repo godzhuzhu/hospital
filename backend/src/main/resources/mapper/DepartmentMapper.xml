@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.whlg.hospital.mapper.DepartmentMapper">
+
+    <resultMap id="BaseResultMap" type="com.whlg.hospital.entity.Department">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="description" property="description"/>
+        <result column="parent_id" property="parentId"/>
+        <result column="sort_order" property="sortOrder"/>
+        <result column="status" property="status"/>
+        <result column="create_time" property="createTime"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, name, description, parent_id, sort_order, status, create_time
+    </sql>
+
+    <select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.Long">
+        select <include refid="Base_Column_List"/> from t_department where id = #{id}
+    </select>
+
+    <select id="selectAll" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/> from t_department order by id desc
+    </select>
+
+    <insert id="insert" parameterType="com.whlg.hospital.entity.Department" useGeneratedKeys="true" keyProperty="id">
+        insert into t_department (
+            name, description, parent_id, sort_order, status, create_time
+        ) values (
+            #{name}, #{description}, #{parentId}, #{sortOrder}, #{status}, #{createTime}
+        )
+    </insert>
+
+    <update id="updateById">
+        update t_department
+        set name = #{et.name},
+            description = #{et.description},
+            parent_id = #{et.parentId},
+            sort_order = #{et.sortOrder},
+            status = #{et.status},
+            create_time = #{et.createTime}
+        where id = #{et.id}
+    </update>
+
+    <delete id="deleteById" parameterType="java.lang.Long">
+        delete from t_department where id = #{id}
+    </delete>
+
+</mapper>
