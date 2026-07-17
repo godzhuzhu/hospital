@@ -21,6 +21,13 @@
       <div class="extra-links">
         <router-link to="/register">还没有账号？立即注册</router-link>
       </div>
+      <div class="dev-section">
+        <div class="dev-divider"><span>开发模式（跳过 API）</span></div>
+        <button class="btn-primary btn-block btn-dev" @click="devLogin" :disabled="loading">
+          {{ loading ? '登录中...' : '一键登录（Mock 账号）' }}
+        </button>
+        <p class="dev-hint">手机号 13800138000 / 密码 123456</p>
+      </div>
     </div>
   </div>
 </template>
@@ -52,6 +59,19 @@ async function handleLogin() {
   } finally {
     loading.value = false
   }
+}
+
+function devLogin() {
+  loading.value = true
+  const mockToken = 'eyJhbGciOiJIUzI1NiJ9.dev-mock-token'
+  const mockUser = { id: 1, phone: '13800138000', realName: '张三', avatar: '' }
+  const mockAuth = useAuthStore()
+  mockAuth.token = mockToken
+  mockAuth.userInfo = mockUser
+  localStorage.setItem('token', mockToken)
+  localStorage.setItem('userInfo', JSON.stringify(mockUser))
+  const redirect = route.query.redirect || '/'
+  router.push(redirect)
 }
 </script>
 
@@ -124,5 +144,56 @@ async function handleLogin() {
 
 .extra-links a:hover {
   text-decoration: underline;
+}
+
+.dev-section {
+  margin-top: 24px;
+}
+
+.dev-divider {
+  text-align: center;
+  margin-bottom: 12px;
+  position: relative;
+}
+
+.dev-divider::before,
+.dev-divider::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  width: 30%;
+  height: 1px;
+  background: var(--border);
+}
+
+.dev-divider::before {
+  left: 0;
+}
+
+.dev-divider::after {
+  right: 0;
+}
+
+.dev-divider span {
+  font-size: 12px;
+  color: var(--text-muted);
+  background: var(--bg-white);
+  padding: 0 10px;
+  position: relative;
+}
+
+.btn-dev {
+  background: #ff9800;
+}
+
+.btn-dev:hover {
+  background: #f57c00;
+}
+
+.dev-hint {
+  text-align: center;
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-top: 8px;
 }
 </style>
