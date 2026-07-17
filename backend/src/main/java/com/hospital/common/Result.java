@@ -22,6 +22,14 @@ public class Result<T> {
         return ok(null);
     }
 
+    public static <T> Result<T> ok(String message, T data) {
+        Result<T> r = new Result<>();
+        r.code = 200;
+        r.message = message;
+        r.data = data;
+        return r;
+    }
+
     public static <T> Result<T> fail(int code, String message) {
         Result<T> r = new Result<>();
         r.code = code;

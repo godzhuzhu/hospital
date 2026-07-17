@@ -27,10 +27,13 @@ public class AuthController {
     public Result<Map<String, Long>> register(@RequestBody Map<String, String> body) {
         String phone = body.get("phone");
         String password = body.get("password");
-        String confirmPassword = body.get("confirmPassword");
+        String username = body.getOrDefault("username", phone);
+        String email = body.get("email");
+        String realName = body.get("realName");
+        String genderStr = body.get("gender");
 
-        if (password == null || !password.equals(confirmPassword)) {
-            return Result.fail(400, "两次密码不一致");
+        if (phone == null || password == null) {
+            return Result.fail(400, "参数错误");
         }
 
         User exist = userMapper.selectOne(
@@ -40,16 +43,21 @@ public class AuthController {
         }
 
         User user = new User();
-        user.setUsername(phone);
+        user.setUsername(username != null ? username : phone);
         user.setPhone(phone);
         user.setPassword(BCrypt.hashpw(password));
+        user.setEmail(email);
+        user.setRealName(realName);
+        if (genderStr != null) {
+            user.setGender(Integer.valueOf(genderStr));
+        }
         user.setAvatar("img/default-avatar.png");
         user.setStatus(1);
         userMapper.insert(user);
 
         Map<String, Long> data = new LinkedHashMap<>();
         data.put("userId", user.getId());
-        return Result.ok(data);
+        return Result.ok("注册成功", data);
     }
 
     @PostMapping("/login")
@@ -74,7 +82,7 @@ public class AuthController {
         Map<String, Object> data = new LinkedHashMap<>();
         data.put("token", token);
         data.put("userInfo", userInfo);
-        return Result.ok(data);
+        return Result.ok("登录成功", data);
     }
 
     @GetMapping("/me")
@@ -100,21 +108,17 @@ public class AuthController {
 
         String oldPassword = body.get("oldPassword");
         String newPassword = body.get("newPassword");
-        String confirmPassword = body.get("confirmPassword");
 
-        if (newPassword == null || !newPassword.equals(confirmPassword)) {
-            return Result.fail(400, "两次新密码不一致");
-        }
         if (!BCrypt.checkpw(oldPassword, user.getPassword())) {
             return Result.fail(400, "原密码错误");
         }
         user.setPassword(BCrypt.hashpw(newPassword));
         userMapper.updateById(user);
-        return Result.ok();
+        return Result.ok("密码修改成功", null);
     }
 
     @PostMapping("/logout")
     public Result<Void> logout() {
-        return Result.ok();
+        return Result.ok("退出成功", null);
     }
 }

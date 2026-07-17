@@ -8,15 +8,6 @@
           <input v-model="form.phone" type="text" maxlength="11" placeholder="请输入手机号" />
         </div>
         <div class="form-group">
-          <label>验证码</label>
-          <div class="captcha-row">
-            <input v-model="form.captcha" type="text" placeholder="请输入验证码" />
-            <button type="button" class="btn-captcha" @click="sendCaptcha" :disabled="captchaCountdown > 0">
-              {{ captchaCountdown > 0 ? captchaCountdown + 's' : '获取验证码' }}
-            </button>
-          </div>
-        </div>
-        <div class="form-group">
           <label>设置密码</label>
           <input v-model="form.password" type="password" placeholder="6-20位密码" />
         </div>
@@ -41,33 +32,20 @@ import { useRouter } from 'vue-router'
 import { registerApi } from '@/api/auth'
 
 const router = useRouter()
-const form = reactive({ phone: '', captcha: '', password: '', confirmPassword: '' })
-const captchaCountdown = ref(0)
+const form = reactive({ phone: '', password: '', confirmPassword: '' })
 const loading = ref(false)
-
-function sendCaptcha() {
-  if (!/^1[3-9]\d{9}$/.test(form.phone)) return alert('请输入正确的手机号')
-  captchaCountdown.value = 60
-  const timer = setInterval(() => {
-    captchaCountdown.value--
-    if (captchaCountdown.value <= 0) clearInterval(timer)
-  }, 1000)
-  alert('验证码已发送（开发阶段固定使用 123456）')
-}
 
 async function handleRegister() {
   if (!/^1[3-9]\d{9}$/.test(form.phone)) return alert('请输入正确的手机号')
   if (form.password.length < 6) return alert('密码至少6位')
   if (form.password !== form.confirmPassword) return alert('两次密码不一致')
-  if (!form.captcha) return alert('请输入验证码')
 
   loading.value = true
   try {
     await registerApi({
+      username: form.phone,
       phone: form.phone,
       password: form.password,
-      confirmPassword: form.confirmPassword,
-      captcha: form.captcha,
     })
     alert('注册成功！即将跳转登录页')
     router.push('/login')
@@ -118,36 +96,6 @@ async function handleRegister() {
   width: 100%;
   padding: 10px 12px;
   font-size: 14px;
-}
-
-.captcha-row {
-  display: flex;
-  gap: 10px;
-}
-
-.captcha-row input {
-  flex: 1;
-}
-
-.btn-captcha {
-  width: 120px;
-  background: var(--bg);
-  color: var(--primary);
-  border: 1px solid var(--border);
-  border-radius: 4px;
-  font-size: 12px;
-  white-space: nowrap;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.btn-captcha:hover:not(:disabled) {
-  border-color: var(--primary);
-}
-
-.btn-captcha:disabled {
-  color: var(--text-muted);
-  cursor: not-allowed;
 }
 
 .btn-block {
