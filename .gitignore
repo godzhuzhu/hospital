@@ -41,6 +41,9 @@ Thumbs.db
 hs_err_pid*
 replay_pid*
 
+# Backend local secrets
+backend/src/main/resources/application-dev.yml
+
 # Backend build
 backend/target/
 

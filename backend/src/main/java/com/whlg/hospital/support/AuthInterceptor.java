@@ -21,6 +21,7 @@ public class AuthInterceptor implements HandlerInterceptor {
     private static final Set<String> EXCLUDE_PATHS = new HashSet<String>(Arrays.asList(
             "/api/auth/register",
             "/api/auth/login",
+            "/api/auth/sendCaptcha",
             "/api/home/index",
             "/api/hospitals",
             "/api/departments/tree",

@@ -1,11 +1,10 @@
 server:
   port: 8080
 spring:
+  profiles:
+    active: dev
   datasource:
     driver-class-name: ${DB_DRIVER:com.mysql.cj.jdbc.Driver}
-    url: ${DB_URL:jdbc:mysql://localhost:3306/hospital_db?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai}
-    username: ${DB_USERNAME:root}
-    password:
     druid:
       validation-query: SELECT 1
   data:
@@ -25,8 +24,9 @@ mybatis-plus:
     map-underscore-to-camel-case: true
 aliyun:
   sms:
-    access-key-id: ${ALIYUN_SMS_ACCESS_KEY_ID:}
-    access-key-secret: ${ALIYUN_SMS_ACCESS_KEY_SECRET:}
     endpoint: ${ALIYUN_SMS_ENDPOINT:dysmsapi.aliyuncs.com}
-    sign-name: ${ALIYUN_SMS_SIGN_NAME:}
-    template-code: ${ALIYUN_SMS_TEMPLATE_CODE:}
+auth:
+  captcha-bypass:
+    enabled: false
+    code: ""
+    phones: ""

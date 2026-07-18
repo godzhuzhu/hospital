@@ -16,19 +16,27 @@ import com.whlg.hospital.support.CurrentUserHolder;
 import com.whlg.hospital.util.AliyunSmsUtil;
 import com.whlg.hospital.util.PasswordUtil;
 import com.whlg.hospital.util.StatusCode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
+import org.springframework.core.env.Profiles;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 @Service
 public class AuthServiceImpl extends ServiceSupport implements AuthService {
 
+    private static final Logger log = LoggerFactory.getLogger(AuthServiceImpl.class);
     private static final Pattern PHONE_PATTERN = Pattern.compile("^1\\d{10}$");
     private static final long CAPTCHA_EXPIRE_SECONDS = 300L;
     private static final long CAPTCHA_COOLDOWN_SECONDS = 60L;
@@ -39,21 +47,36 @@ public class AuthServiceImpl extends ServiceSupport implements AuthService {
     private final UserTokenMapper userTokenMapper;
     private final StringRedisTemplate stringRedisTemplate;
     private final AliyunSmsUtil aliyunSmsUtil;
+    private final Environment environment;
     private final String smsSignName;
     private final String smsTemplateCode;
+    private final boolean captchaBypassEnabled;
+    private final String captchaBypassCode;
+    private final Set<String> captchaBypassPhones;
 
     public AuthServiceImpl(UserMapper userMapper,
                            UserTokenMapper userTokenMapper,
                            StringRedisTemplate stringRedisTemplate,
                            AliyunSmsUtil aliyunSmsUtil,
+                           Environment environment,
                            @Value("${aliyun.sms.sign-name:}") String smsSignName,
-                           @Value("${aliyun.sms.template-code:}") String smsTemplateCode) {
+                           @Value("${aliyun.sms.template-code:}") String smsTemplateCode,
+                           @Value("${auth.captcha-bypass.enabled:false}") boolean captchaBypassEnabled,
+                           @Value("${auth.captcha-bypass.code:}") String captchaBypassCode,
+                           @Value("${auth.captcha-bypass.phones:}") String captchaBypassPhones) {
         this.userMapper = userMapper;
         this.userTokenMapper = userTokenMapper;
         this.stringRedisTemplate = stringRedisTemplate;
         this.aliyunSmsUtil = aliyunSmsUtil;
+        this.environment = environment;
         this.smsSignName = smsSignName;
         this.smsTemplateCode = smsTemplateCode;
+        this.captchaBypassEnabled = captchaBypassEnabled;
+        this.captchaBypassCode = captchaBypassCode == null ? "" : captchaBypassCode.trim();
+        this.captchaBypassPhones = Arrays.stream(captchaBypassPhones.split(","))
+                .map(String::trim)
+                .filter(phone -> !phone.isEmpty())
+                .collect(Collectors.toSet());
     }
 
     @Override
@@ -64,6 +87,7 @@ public class AuthServiceImpl extends ServiceSupport implements AuthService {
         checkNotBlank(smsSignName, "短信签名未配置");
         checkNotBlank(smsTemplateCode, "短信模板未配置");
 
+        log.info("Sending captcha to phone={}", phone);
         String cooldownKey = captchaCooldownKey(phone);
         Boolean allowed = stringRedisTemplate.opsForValue()
                 .setIfAbsent(cooldownKey, "1", CAPTCHA_COOLDOWN_SECONDS, TimeUnit.SECONDS);
@@ -74,10 +98,12 @@ public class AuthServiceImpl extends ServiceSupport implements AuthService {
         String code = AliyunSmsUtil.generateVerificationCode();
         try {
             String templateParam = String.format("{\"code\":\"%s\",\"min\":\"5\"}", code);
-            aliyunSmsUtil.sendSmsVerifyCode(phone, smsSignName, smsTemplateCode, templateParam, "captcha-" + phone);
+            String providerResponse = aliyunSmsUtil.sendSmsVerifyCode(phone, smsSignName, smsTemplateCode, templateParam, "captcha-" + phone);
             stringRedisTemplate.opsForValue().set(captchaCodeKey(phone), code, CAPTCHA_EXPIRE_SECONDS, TimeUnit.SECONDS);
+            log.info("Captcha sent successfully to phone={}, providerResponse={}", phone, providerResponse);
         } catch (Exception ex) {
             stringRedisTemplate.delete(cooldownKey);
+            log.error("Failed to send captcha to phone={}: {}", phone, ex.getMessage(), ex);
             throw new ApiException(StatusCode.ERROR, "验证码发送失败: " + ex.getMessage());
         }
 
@@ -175,10 +201,29 @@ public class AuthServiceImpl extends ServiceSupport implements AuthService {
     }
 
     private void verifyCaptcha(String phone, String captcha) {
-        check(captcha != null && !captcha.trim().isEmpty(), "验证码不能为空");
+        String normalizedCaptcha = captcha == null ? "" : captcha.trim();
+        check(!normalizedCaptcha.isEmpty(), "验证码不能为空");
+        if (isCaptchaBypassAllowed(phone, normalizedCaptcha)) {
+            log.warn("Captcha bypass applied for phone={} under profiles={}", phone, Arrays.toString(environment.getActiveProfiles()));
+            return;
+        }
+
         String cachedCaptcha = stringRedisTemplate.opsForValue().get(captchaCodeKey(phone));
         check(cachedCaptcha != null, "验证码已过期，请重新获取");
-        check(cachedCaptcha.equals(captcha.trim()), "验证码错误");
+        check(cachedCaptcha.equals(normalizedCaptcha), "验证码错误");
+    }
+
+    private boolean isCaptchaBypassAllowed(String phone, String captcha) {
+        if (!captchaBypassEnabled) {
+            return false;
+        }
+        if (!environment.acceptsProfiles(Profiles.of("dev", "test", "local"))) {
+            return false;
+        }
+        if (captchaBypassCode.isEmpty() || !captchaBypassCode.equals(captcha)) {
+            return false;
+        }
+        return captchaBypassPhones.isEmpty() || captchaBypassPhones.contains(phone);
     }
 
     private String normalizePhone(String phone) {

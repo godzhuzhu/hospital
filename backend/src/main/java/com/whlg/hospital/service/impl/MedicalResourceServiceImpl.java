@@ -349,7 +349,7 @@ public class MedicalResourceServiceImpl extends ServiceSupport implements Medica
             return Collections.singletonList(banner);
         }
         Map<String, Object> banner = new LinkedHashMap<String, Object>();
-        
+
         return Collections.singletonList(banner);
     }
 

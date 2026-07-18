@@ -11,8 +11,8 @@
           <label>验证码</label>
           <div class="captcha-row">
             <input v-model="form.captcha" type="text" placeholder="请输入验证码" />
-            <button type="button" class="btn-captcha" @click="sendCaptcha" :disabled="captchaCountdown > 0">
-              {{ captchaCountdown > 0 ? captchaCountdown + 's' : '获取验证码' }}
+            <button type="button" class="btn-captcha" @click="sendCaptcha" :disabled="sendingCaptcha || captchaCountdown > 0">
+              {{ sendingCaptcha ? '发送中...' : captchaCountdown > 0 ? captchaCountdown + 's' : '获取验证码' }}
             </button>
           </div>
         </div>
@@ -36,23 +36,54 @@
 </template>
 
 <script setup>
-import { reactive, ref } from 'vue'
+import { onBeforeUnmount, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { registerApi } from '@/api/auth'
+import { registerApi, sendCaptchaApi } from '@/api/auth'
 
 const router = useRouter()
 const form = reactive({ phone: '', captcha: '', password: '', confirmPassword: '' })
 const captchaCountdown = ref(0)
+const sendingCaptcha = ref(false)
 const loading = ref(false)
+let captchaTimer = null
 
-function sendCaptcha() {
-  if (!/^1[3-9]\d{9}$/.test(form.phone)) return alert('请输入正确的手机号')
-  captchaCountdown.value = 60
-  const timer = setInterval(() => {
+function startCaptchaCountdown(seconds = 60) {
+  if (captchaTimer) clearInterval(captchaTimer)
+  captchaCountdown.value = seconds
+  captchaTimer = setInterval(() => {
     captchaCountdown.value--
-    if (captchaCountdown.value <= 0) clearInterval(timer)
+    if (captchaCountdown.value <= 0) {
+      clearInterval(captchaTimer)
+      captchaTimer = null
+      captchaCountdown.value = 0
+    }
   }, 1000)
-  alert('验证码已发送（开发阶段固定使用 123456）')
+}
+
+async function sendCaptcha() {
+  if (!/^1[3-9]\d{9}$/.test(form.phone)) {
+    alert('请输入正确的手机号')
+    return
+  }
+  if (sendingCaptcha.value || captchaCountdown.value > 0) {
+    return
+  }
+
+  sendingCaptcha.value = true
+  try {
+    const res = await sendCaptchaApi({ phone: form.phone })
+    const payload = res?.data || {}
+    console.info('验证码发送成功', payload)
+    alert(`验证码已发送，请留意短信${payload.cooldownSeconds ? `（${payload.cooldownSeconds} 秒后可重发）` : ''}`)
+    startCaptchaCountdown(payload.cooldownSeconds || 60)
+  } catch (error) {
+    console.error('验证码发送失败', error)
+    if (typeof error?.code !== 'number') {
+      alert(error?.response?.data?.message || error?.message || '验证码发送失败，请稍后重试')
+    }
+  } finally {
+    sendingCaptcha.value = false
+  }
 }
 
 async function handleRegister() {
@@ -77,6 +108,13 @@ async function handleRegister() {
     loading.value = false
   }
 }
+
+onBeforeUnmount(() => {
+  if (captchaTimer) {
+    clearInterval(captchaTimer)
+    captchaTimer = null
+  }
+})
 </script>
 
 <style scoped>
